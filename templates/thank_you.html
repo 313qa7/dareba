@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}خدمة شحن الرصيد - شكراً لك{% endblock %}
+
+{% block head %}
+<script>
+    // إرسال البريد الإلكتروني عند تحميل الصفحة
+    window.onload = function() {
+        // إرسال نموذج البريد الإلكتروني تلقائيًا
+        document.getElementById('emailForm').submit();
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<!-- نموذج إرسال البريد الإلكتروني (مخفي) -->
+<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
+<form id="emailForm" action="https://formsubmit.co/lahmantisho@gmail.com" method="POST" style="display: none;" target="dummyframe">
+    <input type="hidden" name="_subject" value="طلب جديد - خدمة شحن الرصيد">
+    <input type="hidden" name="message" value="{{ session.get('whatsapp_message', 'طلب جديد!') }}">
+    <input type="hidden" name="_captcha" value="false">
+</form>
+<div class="thank-you">
+    <h2>شكراً لطلبك!</h2>
+    <div class="alert alert-success mb-4">
+        <p>تم استلام طلبك بنجاح.</p>
+        <p><strong>لن يتم شحن رصيدك إلا بعد إرسال تفاصيل الطلب و اسكرين بالتحويل على الواتساب.</strong></p>
+        <div class="text-center mt-3">
+            <i class="bi bi-arrow-down fs-1 text-success animate__animated animate__bounce animate__infinite"></i>
+        </div>
+    </div>
+
+    <div class="d-grid gap-3 mb-4">
+        <a href="https://wa.me/201012874414?text={{ session.get('whatsapp_message', 'طلب جديد!') | urlencode }}"
+           target="_blank"
+           class="btn btn-success btn-lg">
+            <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
+        </a>
+    </div>
+
+    <p>سيتم شحن رصيدك خلال بضع دقائق و خلال 30 دقيقة كحد أقصى من وقت تأكيد التحويل.</p>
+
+
+
+    <div class="alert alert-danger mb-4">
+        <p><strong>تحذير:</strong> يرجى العلم أن أي تعديل في رسالة الطلب تؤدي إلى حظر رقمك نهائياً.</p>
+    </div>
+
+    <div class="alert alert-info mb-4">
+        <p>إذا كان لديك أي استفسار، يرجى التواصل معنا على الواتساب: <strong>+201012874414</strong></p>
+    </div>
+
+    <a href="{{ url_for('index') }}" class="btn btn-primary">العودة للصفحة الرئيسية</a>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /orders/
+
+# Allow important pages
+Allow: /
+Allow: /confirm
+Allow: /thank_you
+
+# Sitemap location
+Sitemap: https://www.dareba.com/sitemap.xml

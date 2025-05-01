@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}خدمة شحن الرصيد - رفع الإيصال{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">رفع صورة إيصال التحويل</h2>
+                
+                <div class="alert alert-info mb-4">
+                    <p>يرجى تحويل المبلغ إلى رقم فودافون كاش التالي:</p>
+                    <div class="vodafone-number">{{ vodafone_cash }}</div>
+                    <p>ثم قم برفع صورة إيصال التحويل أدناه.</p>
+                </div>
+                
+                <form method="POST" action="{{ url_for('upload_receipt') }}" enctype="multipart/form-data">
+                    <div class="form-group mb-3">
+                        <label for="receipt" class="form-label">صورة الإيصال:</label>
+                        <input type="file" class="form-control" id="receipt" name="receipt" accept="image/*" required>
+                        <small class="form-text text-muted">يرجى التأكد من وضوح الصورة وظهور جميع تفاصيل التحويل.</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">رفع الإيصال وإتمام الطلب</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

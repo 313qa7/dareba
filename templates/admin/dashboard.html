@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}لوحة تحكم الأدمن{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">لوحة تحكم الأدمن</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">إدارة الطلبات</h5>
+                                <p class="card-text">عرض وإدارة جميع الطلبات</p>
+                                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-primary">عرض الطلبات</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">تغيير كلمة المرور</h5>
+                                <p class="card-text">تغيير كلمة مرور الأدمن</p>
+                                <a href="{{ url_for('admin.change_password') }}" class="btn btn-primary">تغيير كلمة المرور</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">تسجيل الخروج</h5>
+                                <p class="card-text">تسجيل الخروج من لوحة التحكم</p>
+                                <a href="{{ url_for('admin.logout') }}" class="btn btn-danger">تسجيل الخروج</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

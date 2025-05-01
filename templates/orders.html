@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}إدارة الطلبات{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">إدارة الطلبات</h3>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light">الرجوع للوحة التحكم</a>
+            </div>
+            <div class="card-body">
+                {% if orders %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>الاسم</th>
+                                <th>رقم الهاتف</th>
+                                <th>الرصيد الصافي</th>
+                                <th>التكلفة الإجمالية</th>
+                                <th>الحالة</th>
+                                <th>تاريخ الإنشاء</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.user_name }}</td>
+                                <td>{{ order.user_phone }}</td>
+                                <td>{{ order.net_balance }} ج</td>
+                                <td>{{ order.total_cost }} ج</td>
+                                <td>
+                                    {% if order.status == 'pending' %}
+                                    <span class="badge bg-warning">قيد الانتظار</span>
+                                    {% elif order.status == 'completed' %}
+                                    <span class="badge bg-success">مكتمل</span>
+                                    {% elif order.status == 'cancelled' %}
+                                    <span class="badge bg-danger">ملغي</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ order.created_at.strftime('%Y-%m-%d %I:%M %p') }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-sm btn-success">تم</button>
+                                        <button type="button" class="btn btn-sm btn-danger">إلغاء</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-info">
+                    لا توجد طلبات حتى الآن.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

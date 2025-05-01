@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}الصفحة غير موجودة - خدمة شحن رصيد فودافون{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body text-center">
+                <h1 class="display-1 text-danger">404</h1>
+                <h2 class="mb-4">عفواً، الصفحة غير موجودة</h2>
+                <p class="lead mb-4">الصفحة التي تبحث عنها غير موجودة أو تم نقلها أو تغيير اسمها.</p>
+                <p>يمكنك العودة إلى <a href="{{ url_for('index') }}" class="text-primary">الصفحة الرئيسية</a> أو تجربة البحث عن خدمة شحن رصيد فودافون.</p>
+                
+                <div class="mt-5">
+                    <h4>روابط مفيدة:</h4>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-primary btn-block">الصفحة الرئيسية</a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ url_for('confirm') }}" class="btn btn-outline-primary btn-block">تأكيد الطلب</a>
+                        </div>
+                        <div class="col-md-4">
+                            <a href="{{ url_for('thank_you') }}" class="btn btn-outline-primary btn-block">شكراً لطلبك</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-5">
+                    <h4>هل تبحث عن خدمة شحن رصيد فودافون؟</h4>
+                    <p>نحن نقدم خدمة شحن رصيد فودافون بخصم 23% من قيمة الرصيد. يمكنك الاستفادة من خدمتنا الآن!</p>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">شحن رصيد فودافون الآن</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
