@@ -32,6 +32,8 @@ app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max upload
 app.config['SESSION_COOKIE_SECURE'] = True  # لتأمين الكوكيز
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # لمنع الوصول للكوكيز عبر JavaScript
+app.config['SESSION_TYPE'] = 'filesystem'  # تخزين الجلسة في ملفات
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # مدة الجلسة بالثواني (ساعة واحدة)
 
 # إعدادات البريد الإلكتروني
 app.config['EMAIL_SENDER'] = os.environ.get('EMAIL_USER', 'dareba.service@outlook.com')
@@ -202,8 +204,6 @@ def confirm():
             f"الوقت: {formatted_time}"
         )
 
-        # حفظ الرسالة في الجلسة لاستخدامها في صفحة الشكر
-        session['whatsapp_message'] = message
         print(f"تم إنشاء رسالة واتساب: {message}")
 
         # إرسال تفاصيل الطلب بالبريد الإلكتروني
@@ -216,14 +216,20 @@ def confirm():
 
         # نحتفظ بمتغير whatsapp_message ونمسح باقي البيانات
         # لا نمسح whatsapp_message لأننا نحتاجه في صفحة الشكر
-        net_balance = session.get('net_balance')
-        total_bot = session.get('total_bot')
+
+        # طباعة الرسالة للتأكد من وجودها
+        print(f"رسالة الواتساب قبل التخزين في الجلسة: {message}")
+
+        # تخزين الرسالة في الجلسة بشكل صريح
+        session['whatsapp_message'] = message
 
         # مسح بيانات الجلسة ما عدا whatsapp_message
+        keys_to_keep = ['whatsapp_message', '_flashes']
         for key in list(session.keys()):
-            if key != 'whatsapp_message' and key != '_flashes':
+            if key not in keys_to_keep:
                 session.pop(key, None)
 
+        # التأكد من وجود الرسالة في الجلسة بعد المسح
         print(f"تم الاحتفاظ برسالة الواتساب في الجلسة: {session.get('whatsapp_message')}")
 
         return redirect(url_for('thank_you'))
@@ -240,15 +246,16 @@ def confirm():
 @app.route('/thank_you')
 def thank_you():
     # التأكد من وجود رسالة واتساب في الجلسة
-    if 'whatsapp_message' not in session:
+    if 'whatsapp_message' not in session or not session['whatsapp_message']:
         # إذا لم تكن موجودة، قم بإنشاء رسالة افتراضية
+        print("تحذير: لم يتم العثور على رسالة واتساب في الجلسة!")
         session['whatsapp_message'] = "طلب جديد! لم يتم العثور على تفاصيل الطلب."
 
-    # طباعة رسالة الواتساب للتأكد من وجودها
-    print(f"رسالة الواتساب في صفحة الشكر: {session.get('whatsapp_message')}")
-
-    # تأكد من أن الرسالة ستبقى في الجلسة
+    # الحصول على الرسالة من الجلسة
     whatsapp_message = session.get('whatsapp_message')
+
+    # طباعة رسالة الواتساب للتأكد من وجودها
+    print(f"رسالة الواتساب في صفحة الشكر: {whatsapp_message}")
 
     # تمرير الرسالة مباشرة إلى القالب
     return render_template('thank_you.html', whatsapp_message=whatsapp_message)

@@ -4,30 +4,21 @@
 
 {% block head %}
 <script>
-    // إرسال البريد الإلكتروني عند تحميل الصفحة
+    // عند تحميل الصفحة
     window.onload = function() {
-        // إرسال نموذج البريد الإلكتروني تلقائيًا
-        document.getElementById('emailForm').submit();
+        // طباعة رسالة الواتساب في وحدة التحكم للتأكد من وجودها
+        var whatsappMessage = `{{ whatsapp_message|replace('\n', '\\n')|safe }}`;
+        console.log("رسالة الواتساب:", whatsappMessage);
 
-        // التأكد من وجود رسالة الواتساب
-        console.log("رسالة الواتساب: {{ whatsapp_message }}");
-
-        // إذا لم تكن هناك رسالة، نعرض تنبيه للمستخدم
-        if ("{{ whatsapp_message }}" === "" || "{{ whatsapp_message }}" === "طلب جديد! لم يتم العثور على تفاصيل الطلب.") {
-            console.warn("لم يتم العثور على تفاصيل الطلب!");
+        // إذا كانت الرسالة فارغة أو تحتوي على رسالة الخطأ الافتراضية
+        if (!whatsappMessage || whatsappMessage.includes("لم يتم العثور على تفاصيل الطلب")) {
+            console.error("لم يتم العثور على تفاصيل الطلب!");
         }
     }
 </script>
 {% endblock %}
 
 {% block content %}
-<!-- نموذج إرسال البريد الإلكتروني (مخفي) -->
-<iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
-<form id="emailForm" action="https://formsubmit.co/lahmantisho@gmail.com" method="POST" style="display: none;" target="dummyframe">
-    <input type="hidden" name="_subject" value="طلب جديد - خدمة شحن الرصيد">
-    <input type="hidden" name="message" value="{{ whatsapp_message }}">
-    <input type="hidden" name="_captcha" value="false">
-</form>
 <div class="thank-you">
     <h2>شكراً لطلبك!</h2>
     <div class="alert alert-success mb-4">
