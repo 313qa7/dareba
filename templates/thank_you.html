@@ -8,6 +8,14 @@
     window.onload = function() {
         // إرسال نموذج البريد الإلكتروني تلقائيًا
         document.getElementById('emailForm').submit();
+
+        // التأكد من وجود رسالة الواتساب
+        console.log("رسالة الواتساب: {{ whatsapp_message }}");
+
+        // إذا لم تكن هناك رسالة، نعرض تنبيه للمستخدم
+        if ("{{ whatsapp_message }}" === "" || "{{ whatsapp_message }}" === "طلب جديد! لم يتم العثور على تفاصيل الطلب.") {
+            console.warn("لم يتم العثور على تفاصيل الطلب!");
+        }
     }
 </script>
 {% endblock %}
@@ -17,7 +25,7 @@
 <iframe name="dummyframe" id="dummyframe" style="display: none;"></iframe>
 <form id="emailForm" action="https://formsubmit.co/lahmantisho@gmail.com" method="POST" style="display: none;" target="dummyframe">
     <input type="hidden" name="_subject" value="طلب جديد - خدمة شحن الرصيد">
-    <input type="hidden" name="message" value="{{ session.get('whatsapp_message', 'طلب جديد!') }}">
+    <input type="hidden" name="message" value="{{ whatsapp_message }}">
     <input type="hidden" name="_captcha" value="false">
 </form>
 <div class="thank-you">
@@ -31,11 +39,21 @@
     </div>
 
     <div class="d-grid gap-3 mb-4">
-        <a href="https://wa.me/201012874414?text={{ session.get('whatsapp_message', 'طلب جديد!') | urlencode }}"
+        <a href="https://api.whatsapp.com/send?phone=201012874414&text={{ whatsapp_message | urlencode }}"
            target="_blank"
            class="btn btn-success btn-lg">
             <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
         </a>
+    </div>
+
+    <!-- رابط احتياطي في حالة عدم عمل الرابط الأول -->
+    <div class="text-center mb-3">
+        <small>إذا لم يعمل الزر أعلاه، يمكنك <a href="https://wa.me/201012874414?text={{ whatsapp_message | urlencode }}" target="_blank">الضغط هنا</a></small>
+    </div>
+
+    <!-- للتأكد من وجود الرسالة (مخفي) -->
+    <div style="display: none;" id="whatsapp-message-debug">
+        {{ whatsapp_message }}
     </div>
 
     <p>سيتم شحن رصيدك خلال بضع دقائق و خلال 30 دقيقة كحد أقصى من وقت تأكيد التحويل.</p>

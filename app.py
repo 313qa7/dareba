@@ -214,11 +214,17 @@ def confirm():
         except Exception as e:
             print(f"حدث خطأ أثناء إرسال البريد الإلكتروني: {str(e)}")
 
-        # مسح بيانات الجلسة
-        session.pop('net_balance', None)
-        session.pop('total_vodafone', None)
-        session.pop('total_bot', None)
-        session.pop('order_id', None)
+        # نحتفظ بمتغير whatsapp_message ونمسح باقي البيانات
+        # لا نمسح whatsapp_message لأننا نحتاجه في صفحة الشكر
+        net_balance = session.get('net_balance')
+        total_bot = session.get('total_bot')
+
+        # مسح بيانات الجلسة ما عدا whatsapp_message
+        for key in list(session.keys()):
+            if key != 'whatsapp_message' and key != '_flashes':
+                session.pop(key, None)
+
+        print(f"تم الاحتفاظ برسالة الواتساب في الجلسة: {session.get('whatsapp_message')}")
 
         return redirect(url_for('thank_you'))
 
@@ -238,7 +244,14 @@ def thank_you():
         # إذا لم تكن موجودة، قم بإنشاء رسالة افتراضية
         session['whatsapp_message'] = "طلب جديد! لم يتم العثور على تفاصيل الطلب."
 
-    return render_template('thank_you.html')
+    # طباعة رسالة الواتساب للتأكد من وجودها
+    print(f"رسالة الواتساب في صفحة الشكر: {session.get('whatsapp_message')}")
+
+    # تأكد من أن الرسالة ستبقى في الجلسة
+    whatsapp_message = session.get('whatsapp_message')
+
+    # تمرير الرسالة مباشرة إلى القالب
+    return render_template('thank_you.html', whatsapp_message=whatsapp_message)
 
 # تسجيل صفحات الأدمن
 app.register_blueprint(admin_bp, url_prefix='/admin')
