@@ -6,32 +6,44 @@
 <script>
     // عند تحميل الصفحة
     window.onload = function() {
-        // طباعة رسالة الواتساب في وحدة التحكم للتأكد من وجودها
+        // الحصول على الروابط والرسائل من الخادم
         var whatsappMessage = `{{ whatsapp_message|replace('\n', '\\n')|safe }}`;
-        var whatsappUrl = "{{ whatsapp_url }}";
+        var primaryUrl = "{{ whatsapp_url_alt }}";  // رابط wa.me
+        var fallbackUrl = "{{ whatsapp_url }}";     // رابط api.whatsapp.com
 
         console.log("رسالة الواتساب:", whatsappMessage);
-        console.log("رابط الواتساب:", whatsappUrl);
+        console.log("رابط الواتساب الأساسي:", primaryUrl);
+        console.log("رابط الواتساب الاحتياطي:", fallbackUrl);
 
-        // إذا كانت الرسالة فارغة أو تحتوي على رسالة الخطأ الافتراضية
+        // التحقق من وجود الرسالة
         if (!whatsappMessage || whatsappMessage.includes("لم يتم العثور على تفاصيل الطلب")) {
             console.error("لم يتم العثور على تفاصيل الطلب!");
         }
 
-        // التوجيه التلقائي إلى الواتساب بعد 3 ثوانٍ
+        // تحديث عناصر الصفحة بالروابط
         setTimeout(function() {
-            // التحقق من وجود رابط الواتساب
-            if (whatsappUrl) {
-                console.log("جاري التوجيه إلى الواتساب...");
-                // فتح رابط الواتساب في نافذة جديدة
-                window.open(whatsappUrl, '_blank');
-            } else {
-                console.error("لم يتم العثور على رابط الواتساب!");
-                // استخدام الطريقة البديلة
-                var alternativeUrl = "https://wa.me/201012874414?text=" + encodeURIComponent(whatsappMessage);
-                window.open(alternativeUrl, '_blank');
+            // تحديث زر الواتساب الرئيسي
+            var mainButton = document.getElementById('whatsapp-button');
+            if (mainButton) {
+                mainButton.setAttribute('data-url', primaryUrl);
+                mainButton.setAttribute('data-fallback', fallbackUrl);
+                console.log("تم تحديث زر الواتساب الرئيسي");
             }
-        }, 3000); // انتظار 3 ثوانٍ قبل التوجيه
+
+            // تحديث الرابط الاحتياطي
+            var altLink = document.getElementById('whatsapp-link-alt');
+            if (altLink) {
+                altLink.setAttribute('data-url', primaryUrl);
+                altLink.setAttribute('data-fallback', fallbackUrl);
+                console.log("تم تحديث رابط الواتساب الاحتياطي");
+            }
+
+            // التوجيه التلقائي إلى الواتساب بعد 3 ثوانٍ
+            setTimeout(function() {
+                console.log("جاري التوجيه التلقائي إلى الواتساب...");
+                sendWhatsApp(); // استدعاء دالة إرسال الواتساب
+            }, 3000); // انتظار 3 ثوانٍ قبل التوجيه
+        }, 500); // انتظار نصف ثانية للتأكد من تحميل الصفحة
     }
 </script>
 {% endblock %}
@@ -48,26 +60,53 @@
     </div>
 
     <div class="d-grid gap-3 mb-4">
-        {% if whatsapp_url %}
-            <!-- استخدام الرابط المباشر إذا كان موجوداً -->
-            <a href="{{ whatsapp_url }}"
-               target="_blank"
-               class="btn btn-success btn-lg">
-                <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
-            </a>
-        {% else %}
-            <!-- استخدام الطريقة القديمة كاحتياط -->
-            <a href="https://api.whatsapp.com/send?phone=201012874414&text={{ whatsapp_message | urlencode }}"
-               target="_blank"
-               class="btn btn-success btn-lg">
-                <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
-            </a>
-        {% endif %}
+        <!-- زر إرسال تفاصيل الطلب عبر واتساب -->
+        <a href="#" id="whatsapp-button"
+           onclick="sendWhatsApp()"
+           class="btn btn-success btn-lg">
+            <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
+        </a>
     </div>
 
-    <!-- رابط احتياطي في حالة عدم عمل الرابط الأول -->
+    <!-- رابط احتياطي في حالة عدم عمل الزر الأول -->
     <div class="text-center mb-3">
-        <small>إذا لم يعمل الزر أعلاه، يمكنك <a href="https://wa.me/201012874414?text={{ whatsapp_message | urlencode }}" target="_blank">الضغط هنا</a></small>
+        <small>إذا لم يعمل الزر أعلاه، يمكنك <a href="#" id="whatsapp-link-alt" onclick="sendWhatsApp()">الضغط هنا</a></small>
+    </div>
+
+    <script>
+        // دالة لإرسال رسالة واتساب
+        function sendWhatsApp() {
+            // الحصول على الروابط من السمات أو استخدام الروابط المباشرة
+            var button = document.getElementById('whatsapp-button');
+            var primaryUrl = button ? button.getAttribute('data-url') : "{{ whatsapp_url_alt }}";
+            var fallbackUrl = button ? button.getAttribute('data-fallback') : "{{ whatsapp_url }}";
+
+            console.log("محاولة فتح رابط الواتساب الأساسي:", primaryUrl);
+
+            try {
+                // محاولة فتح الرابط في نافذة جديدة
+                var newWindow = window.open(primaryUrl, '_blank');
+
+                // التحقق من نجاح فتح النافذة
+                if (!newWindow || newWindow.closed || typeof newWindow.closed=='undefined') {
+                    console.log("فشل فتح الرابط الأساسي، جاري استخدام الرابط الاحتياطي");
+                    // إذا فشل، استخدم رابط بديل
+                    window.location.href = fallbackUrl;
+                }
+            } catch (e) {
+                console.error("حدث خطأ أثناء فتح رابط الواتساب:", e);
+                // في حالة حدوث خطأ، استخدم الرابط الاحتياطي
+                window.location.href = fallbackUrl;
+            }
+
+            return false;
+        }
+    </script>
+
+    <!-- للتأكد من وجود الروابط (مخفي) -->
+    <div style="display: none;">
+        <div id="whatsapp-url-primary-debug">{{ whatsapp_url_alt }}</div>
+        <div id="whatsapp-url-fallback-debug">{{ whatsapp_url }}</div>
     </div>
 
     <!-- للتأكد من وجود الرسالة (مخفي) -->
