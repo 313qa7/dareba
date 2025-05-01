@@ -47,10 +47,10 @@ limiter = Limiter(
     storage_uri="memory://",
 )
 
-# وظيفة إرسال البريد الإلكتروني (حفظ في ملف فقط)
+# وظيفة إرسال البريد الإلكتروني (باستخدام SMTP)
 def send_order_email(order_details):
     try:
-        # إنشاء مجلد للإشعارات إذا لم يكن موجودًا
+        # إنشاء مجلد للإشعارات إذا لم يكن موجودًا (للاحتياط)
         email_dir = 'email_notifications'
         os.makedirs(email_dir, exist_ok=True)
 
@@ -58,7 +58,7 @@ def send_order_email(order_details):
         timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         email_file = os.path.join(email_dir, f'order_notification_{timestamp}.txt')
 
-        # كتابة تفاصيل الطلب في الملف
+        # كتابة تفاصيل الطلب في الملف (للاحتياط)
         with open(email_file, 'w', encoding='utf-8') as f:
             f.write(f"To: {app.config['NOTIFICATION_EMAIL']}\n")
             f.write(f"From: {app.config['EMAIL_SENDER']}\n")
@@ -68,13 +68,35 @@ def send_order_email(order_details):
 
         print(f"تم حفظ إشعار البريد الإلكتروني في الملف: {email_file}")
 
-        # طباعة رسالة تأكيد
-        print("تم حفظ تفاصيل الطلب في ملف نصي.")
-        print("لإرسال الإيميلات تلقائيًا، يرجى استخدام خدمة إرسال بريد إلكتروني خارجية.")
+        # إرسال البريد الإلكتروني باستخدام SMTP
+        msg = MIMEMultipart()
+        msg['From'] = app.config['EMAIL_SENDER']
+        msg['To'] = app.config['NOTIFICATION_EMAIL']
+        msg['Subject'] = "طلب جديد - خدمة شحن الرصيد"
 
-        return True
+        # إضافة محتوى الرسالة
+        msg.attach(MIMEText(order_details, 'plain', 'utf-8'))
+
+        # إعداد خادم SMTP
+        try:
+            # استخدام خادم Outlook
+            server = smtplib.SMTP('smtp-mail.outlook.com', 587)
+            server.starttls()  # تأمين الاتصال
+            server.login(app.config['EMAIL_SENDER'], app.config['EMAIL_PASSWORD'])
+
+            # إرسال البريد الإلكتروني
+            server.send_message(msg)
+            server.quit()
+
+            print("تم إرسال البريد الإلكتروني بنجاح!")
+            return True
+        except Exception as smtp_error:
+            print(f"حدث خطأ أثناء إرسال البريد الإلكتروني: {str(smtp_error)}")
+            print("تم حفظ تفاصيل الطلب في ملف نصي كاحتياط.")
+            return False
+
     except Exception as e:
-        print(f"حدث خطأ أثناء حفظ إشعار البريد الإلكتروني: {str(e)}")
+        print(f"حدث خطأ عام: {str(e)}")
         return False
 
 # التأكد من وجود مجلد الرفع
