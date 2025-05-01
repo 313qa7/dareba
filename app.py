@@ -186,14 +186,11 @@ def confirm():
 
         # تجهيز رسالة واتساب
         # تحويل الوقت إلى توقيت القاهرة بنظام 12 ساعة
-        # نستخدم UTC ثم نضيف ساعتين لتوقيت القاهرة (بدلاً من 3 ساعات للتوقيت الصيفي)
         utc_now = datetime.now(pytz.UTC)
-        # نضيف ساعتين فقط لتوقيت القاهرة
         cairo_time = utc_now.astimezone(pytz.timezone('Africa/Cairo'))
-        # نطرح ساعة واحدة لتصحيح فرق التوقيت الصيفي
-        corrected_time = cairo_time.replace(hour=(cairo_time.hour - 1) % 24)
-        formatted_time = corrected_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
+        formatted_time = cairo_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
 
+        # إنشاء نص الرسالة
         message = (
             f"طلب جديد!\n"
             f"رقم الطلب: {new_order.id}\n"
@@ -214,25 +211,18 @@ def confirm():
         except Exception as e:
             print(f"حدث خطأ أثناء إرسال البريد الإلكتروني: {str(e)}")
 
-        # نحتفظ بمتغير whatsapp_message ونمسح باقي البيانات
-        # لا نمسح whatsapp_message لأننا نحتاجه في صفحة الشكر
+        # تشفير الرسالة لاستخدامها في الرابط
+        import urllib.parse
+        encoded_message = urllib.parse.quote(message)
 
-        # طباعة الرسالة للتأكد من وجودها
-        print(f"رسالة الواتساب قبل التخزين في الجلسة: {message}")
+        # إنشاء رابط الواتساب مباشرة
+        whatsapp_url = f"https://api.whatsapp.com/send?phone=201012874414&text={encoded_message}"
 
-        # تخزين الرسالة في الجلسة بشكل صريح
-        session['whatsapp_message'] = message
+        # مسح جميع بيانات الجلسة
+        session.clear()
 
-        # مسح بيانات الجلسة ما عدا whatsapp_message
-        keys_to_keep = ['whatsapp_message', '_flashes']
-        for key in list(session.keys()):
-            if key not in keys_to_keep:
-                session.pop(key, None)
-
-        # التأكد من وجود الرسالة في الجلسة بعد المسح
-        print(f"تم الاحتفاظ برسالة الواتساب في الجلسة: {session.get('whatsapp_message')}")
-
-        return redirect(url_for('thank_you'))
+        # توجيه المستخدم مباشرة إلى صفحة الشكر مع تمرير رابط الواتساب كمعلمة في الرابط
+        return redirect(url_for('thank_you', whatsapp_url=whatsapp_url, message=encoded_message))
 
     return render_template('confirm.html',
                           net_balance=session['net_balance'],
@@ -245,20 +235,20 @@ def confirm():
 # صفحة الشكر
 @app.route('/thank_you')
 def thank_you():
-    # التأكد من وجود رسالة واتساب في الجلسة
-    if 'whatsapp_message' not in session or not session['whatsapp_message']:
-        # إذا لم تكن موجودة، قم بإنشاء رسالة افتراضية
-        print("تحذير: لم يتم العثور على رسالة واتساب في الجلسة!")
-        session['whatsapp_message'] = "طلب جديد! لم يتم العثور على تفاصيل الطلب."
+    # الحصول على رابط الواتساب والرسالة من معلمات الرابط
+    whatsapp_url = request.args.get('whatsapp_url', '')
+    encoded_message = request.args.get('message', '')
 
-    # الحصول على الرسالة من الجلسة
-    whatsapp_message = session.get('whatsapp_message')
+    # فك تشفير الرسالة إذا كانت موجودة
+    import urllib.parse
+    message = urllib.parse.unquote(encoded_message) if encoded_message else "طلب جديد! لم يتم العثور على تفاصيل الطلب."
 
-    # طباعة رسالة الواتساب للتأكد من وجودها
-    print(f"رسالة الواتساب في صفحة الشكر: {whatsapp_message}")
+    # طباعة المعلومات للتأكد من وجودها
+    print(f"رابط الواتساب في صفحة الشكر: {whatsapp_url}")
+    print(f"رسالة الواتساب في صفحة الشكر: {message}")
 
-    # تمرير الرسالة مباشرة إلى القالب
-    return render_template('thank_you.html', whatsapp_message=whatsapp_message)
+    # تمرير المعلومات إلى القالب
+    return render_template('thank_you.html', whatsapp_url=whatsapp_url, whatsapp_message=message)
 
 # تسجيل صفحات الأدمن
 app.register_blueprint(admin_bp, url_prefix='/admin')

@@ -8,12 +8,30 @@
     window.onload = function() {
         // طباعة رسالة الواتساب في وحدة التحكم للتأكد من وجودها
         var whatsappMessage = `{{ whatsapp_message|replace('\n', '\\n')|safe }}`;
+        var whatsappUrl = "{{ whatsapp_url }}";
+
         console.log("رسالة الواتساب:", whatsappMessage);
+        console.log("رابط الواتساب:", whatsappUrl);
 
         // إذا كانت الرسالة فارغة أو تحتوي على رسالة الخطأ الافتراضية
         if (!whatsappMessage || whatsappMessage.includes("لم يتم العثور على تفاصيل الطلب")) {
             console.error("لم يتم العثور على تفاصيل الطلب!");
         }
+
+        // التوجيه التلقائي إلى الواتساب بعد 3 ثوانٍ
+        setTimeout(function() {
+            // التحقق من وجود رابط الواتساب
+            if (whatsappUrl) {
+                console.log("جاري التوجيه إلى الواتساب...");
+                // فتح رابط الواتساب في نافذة جديدة
+                window.open(whatsappUrl, '_blank');
+            } else {
+                console.error("لم يتم العثور على رابط الواتساب!");
+                // استخدام الطريقة البديلة
+                var alternativeUrl = "https://wa.me/201012874414?text=" + encodeURIComponent(whatsappMessage);
+                window.open(alternativeUrl, '_blank');
+            }
+        }, 3000); // انتظار 3 ثوانٍ قبل التوجيه
     }
 </script>
 {% endblock %}
@@ -30,11 +48,21 @@
     </div>
 
     <div class="d-grid gap-3 mb-4">
-        <a href="https://api.whatsapp.com/send?phone=201012874414&text={{ whatsapp_message | urlencode }}"
-           target="_blank"
-           class="btn btn-success btn-lg">
-            <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
-        </a>
+        {% if whatsapp_url %}
+            <!-- استخدام الرابط المباشر إذا كان موجوداً -->
+            <a href="{{ whatsapp_url }}"
+               target="_blank"
+               class="btn btn-success btn-lg">
+                <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
+            </a>
+        {% else %}
+            <!-- استخدام الطريقة القديمة كاحتياط -->
+            <a href="https://api.whatsapp.com/send?phone=201012874414&text={{ whatsapp_message | urlencode }}"
+               target="_blank"
+               class="btn btn-success btn-lg">
+                <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
+            </a>
+        {% endif %}
     </div>
 
     <!-- رابط احتياطي في حالة عدم عمل الرابط الأول -->
@@ -45,6 +73,11 @@
     <!-- للتأكد من وجود الرسالة (مخفي) -->
     <div style="display: none;" id="whatsapp-message-debug">
         {{ whatsapp_message }}
+    </div>
+
+    <!-- للتأكد من وجود الرابط (مخفي) -->
+    <div style="display: none;" id="whatsapp-url-debug">
+        {{ whatsapp_url }}
     </div>
 
     <p>سيتم شحن رصيدك خلال بضع دقائق و خلال 30 دقيقة كحد أقصى من وقت تأكيد التحويل.</p>
