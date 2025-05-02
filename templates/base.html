@@ -53,6 +53,94 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.min.css') }}">
 
+    <style>
+        /* أنماط شريط المطور */
+        .developer-banner {
+            background: linear-gradient(135deg, #000000 0%, #222222 100%);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .developer-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            transform: rotateZ(30deg);
+            animation: shine 3s infinite;
+        }
+
+        .developer-content {
+            font-size: 1.1rem;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .developer-name {
+            color: #ffffff;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+            padding: 0 5px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .developer-name:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .developer-name::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: 0;
+            left: 0;
+            background-color: #ffffff;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-out;
+        }
+
+        .developer-name:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        .email-icon {
+            font-size: 0.8em;
+            opacity: 0.8;
+            vertical-align: super;
+            transition: all 0.3s ease;
+        }
+
+        .developer-name:hover .email-icon {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        @keyframes shine {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+    </style>
+
     {% block head %}{% endblock %}
 </head>
 <body>
@@ -62,6 +150,19 @@
             كسبان اللي يوحد الله و يصلي على النبي
             <i class="bi bi-star-fill text-warning ms-2"></i>
         </h5>
+    </div>
+
+    <!-- Developer Credit Banner -->
+    <div class="developer-banner text-center py-2 mb-2">
+        <div class="developer-content animate__animated animate__fadeIn">
+            <i class="bi bi-code-slash text-white me-2"></i>
+            <span>تم تطوير الموقع بواسطة</span>
+            <a href="mailto:313qa7@gmail.com" class="developer-name ms-1 me-1 text-decoration-none">
+                Abdallah AlKhateb
+                <i class="bi bi-envelope-fill ms-1 email-icon"></i>
+            </a>
+            <i class="bi bi-code-slash text-white ms-2"></i>
+        </div>
     </div>
 
     <div class="support-banner text-center py-2 mb-3">
@@ -137,5 +238,6 @@
       }
     }
     </script>
+
 </body>
 </html>
