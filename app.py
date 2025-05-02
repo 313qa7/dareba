@@ -197,6 +197,9 @@ BOT_TAX_RATE = 0.22      # ضريبة البوت 22%
 # الصفحة الرئيسية
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # حساب عدد الطلبات التي تمت
+    total_orders = Order.query.count()
+
     if request.method == 'POST':
         try:
             # طباعة البيانات المستلمة للتشخيص
@@ -205,20 +208,20 @@ def index():
             # التحقق من وجود قيمة الرصيد
             if 'net_balance' not in request.form or not request.form['net_balance']:
                 flash('من فضلك أدخل قيمة الرصيد الصافي', 'danger')
-                return render_template('index.html')
+                return render_template('index.html', total_orders=total_orders)
 
             # تنظيف القيمة المدخلة والتأكد من أنها رقمية
             net_balance_str = request.form['net_balance'].strip()
             if not net_balance_str.isdigit():
                 flash('من فضلك أدخل رقم صحيح فقط!', 'danger')
-                return render_template('index.html')
+                return render_template('index.html', total_orders=total_orders)
 
             net_balance = float(net_balance_str)
 
             # التحقق من أن الرصيد لا يقل عن 50 جنيه
             if net_balance < 50:
                 flash('أقل قيمة لشحن رصيد صافي هي 50 جنيه!', 'danger')
-                return render_template('index.html')
+                return render_template('index.html', total_orders=total_orders)
 
             # حساب التكلفة
             # المعادلة الجديدة: الرصيد الصافي + (الرصيد الصافي × نسبة الضريبة)
@@ -243,7 +246,7 @@ def index():
             print(f"حدث خطأ أثناء معالجة النموذج: {str(e)}")
             flash('حدث خطأ أثناء معالجة طلبك. من فضلك حاول مرة أخرى.', 'danger')
 
-    return render_template('index.html')
+    return render_template('index.html', total_orders=total_orders)
 
 # صفحة تأكيد الطلب
 @app.route('/confirm', methods=['GET', 'POST'])
@@ -270,20 +273,16 @@ def confirm():
         print(f"تم إنشاء طلب جديد برقم: {new_order.id}")
 
         # تجهيز رسالة واتساب
-        # استخدام الوقت المحلي مباشرة بدون أي تعديلات
-        local_time = datetime.now()  # الوقت المحلي على الخادم
-        # تنسيق الوقت بنظام 12 ساعة
-        formatted_time = local_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
+        # تم إزالة الوقت من رسالة تفاصيل الطلب
 
-        # إنشاء نص الرسالة
+        # إنشاء نص الرسالة بدون الوقت
         message = (
             f"طلب جديد!\n"
             f"رقم الطلب: {new_order.id}\n"
             f"الاسم: {user_name}\n"
             f"رقم الهاتف الذي سيصل إليه الرصيد: {user_phone}\n"
             f"الرصيد المطلوب: {session['net_balance']} ج\n"
-            f"المبلغ المطلوب دفعه: {session['total_bot']:.0f} ج\n"
-            f"الوقت: {formatted_time}"
+            f"المبلغ المطلوب دفعه: {session['total_bot']:.0f} ج"
         )
 
         print(f"تم إنشاء رسالة واتساب: {message}")
@@ -379,19 +378,16 @@ def thank_you():
             if last_order:
                 print(f"تم العثور على آخر طلب في قاعدة البيانات برقم: {last_order.id}")
                 # إنشاء رسالة واتساب من بيانات الطلب
-                # استخدام الوقت المخزن في قاعدة البيانات
-                # تنسيق الوقت بنظام 12 ساعة
-                formatted_time = last_order.created_at.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
+                # تم إزالة الوقت من رسالة تفاصيل الطلب
 
-                # إنشاء نص الرسالة
+                # إنشاء نص الرسالة بدون الوقت
                 recovered_message = (
                     f"طلب جديد!\n"
                     f"رقم الطلب: {last_order.id}\n"
                     f"الاسم: {last_order.user_name}\n"
                     f"رقم الهاتف الذي سيصل إليه الرصيد: {last_order.user_phone}\n"
                     f"الرصيد المطلوب: {last_order.net_balance} ج\n"
-                    f"المبلغ المطلوب دفعه: {last_order.total_cost:.0f} ج\n"
-                    f"الوقت: {formatted_time}"
+                    f"المبلغ المطلوب دفعه: {last_order.total_cost:.0f} ج"
                 )
 
                 whatsapp_message = recovered_message
@@ -415,6 +411,11 @@ def thank_you():
 
     # طباعة رسالة الواتساب للتأكد من وجودها
     print(f"رسالة الواتساب في صفحة الشكر: {whatsapp_message}")
+
+    # إزالة سطر الوقت من الرسالة إذا كان موجودًا
+    if "الوقت:" in whatsapp_message:
+        whatsapp_message = '\n'.join([line for line in whatsapp_message.split('\n') if not line.startswith("الوقت:")])
+        print("تم إزالة سطر الوقت من الرسالة")
 
     # طباعة الرسالة بتنسيق مناسب للتشخيص
     formatted_message = whatsapp_message.replace('\n', '\\n')

@@ -8,6 +8,166 @@
     <p class="mb-0"><strong>هذه الخدمة مخصصة لأرقام فودافون فقط</strong></p>
 </div>
 
+<div class="stats-container mb-4">
+    <div class="stats-card">
+        <div class="stats-header">
+            <div class="stats-icon">
+                <i class="bi bi-graph-up-arrow"></i>
+            </div>
+            <h4>إحصائيات الموقع</h4>
+        </div>
+        <div class="stats-body">
+            <div class="stats-counter">
+                <div class="counter-value" id="ordersCounter">0</div>
+                <div class="counter-label">طلب تم تنفيذه بنجاح</div>
+            </div>
+            <div class="stats-decoration">
+                <div class="decoration-circle"></div>
+                <div class="decoration-line"></div>
+                <div class="decoration-circle"></div>
+            </div>
+            <div class="stats-message">
+                نشكركم على ثقتكم الغالية في خدمتنا
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stats-container {
+        padding: 0 10px;
+    }
+    .stats-card {
+        background: linear-gradient(135deg, #1e5799 0%, #207cca 50%, #2989d8 100%);
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        color: white;
+        overflow: hidden;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: all 0.3s ease;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    }
+    .stats-card::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+        transform: rotateZ(30deg);
+        animation: shine 3s infinite;
+    }
+    @keyframes shine {
+        0% { transform: translateX(-100%) rotateZ(30deg); }
+        100% { transform: translateX(100%) rotateZ(30deg); }
+    }
+    .stats-header {
+        background-color: rgba(0,0,0,0.2);
+        padding: 15px;
+        text-align: center;
+        position: relative;
+    }
+    .stats-icon {
+        background-color: #ffcc00;
+        border-radius: 50%;
+        color: #1e5799;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        margin-bottom: 10px;
+        font-size: 24px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .stats-header h4 {
+        margin: 0;
+        font-weight: bold;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    .stats-body {
+        padding: 20px;
+        text-align: center;
+    }
+    .stats-counter {
+        margin-bottom: 20px;
+    }
+    .counter-value {
+        font-size: 60px;
+        font-weight: bold;
+        line-height: 1;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        background: linear-gradient(to right, #ffffff, #ffcc00);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+    .counter-label {
+        font-size: 18px;
+        margin-top: 5px;
+    }
+    .stats-decoration {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 15px 0;
+    }
+    .decoration-circle {
+        width: 10px;
+        height: 10px;
+        background-color: #ffcc00;
+        border-radius: 50%;
+    }
+    .decoration-line {
+        height: 2px;
+        flex-grow: 1;
+        background: linear-gradient(to right, transparent, #ffcc00, transparent);
+        margin: 0 10px;
+    }
+    .stats-message {
+        font-style: italic;
+        opacity: 0.8;
+    }
+    @media (max-width: 576px) {
+        .counter-value {
+            font-size: 48px;
+        }
+        .counter-label {
+            font-size: 16px;
+        }
+    }
+</style>
+
+<script>
+    // عداد متحرك لعرض عدد الطلبات
+    document.addEventListener('DOMContentLoaded', function() {
+        const finalValue = {{ total_orders }};
+        const duration = 2000; // مدة العد بالمللي ثانية
+        const counter = document.getElementById('ordersCounter');
+        const startTime = Date.now();
+
+        function updateCounter() {
+            const currentTime = Date.now();
+            const elapsedTime = currentTime - startTime;
+
+            if (elapsedTime < duration) {
+                const value = Math.floor((elapsedTime / duration) * finalValue);
+                counter.textContent = value;
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = finalValue;
+            }
+        }
+
+        updateCounter();
+    });
+</script>
+
 <div class="row">
     <div class="col-md-12">
         <div class="card">
