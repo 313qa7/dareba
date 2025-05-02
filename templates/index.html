@@ -13,14 +13,42 @@
         <div class="card">
             <div class="card-body">
                 <h2 class="card-title text-center mb-4">أدخل الرصيد الصافي المطلوب</h2>
-                <form method="POST" action="{{ url_for('index') }}">
+                <form method="POST" action="{{ url_for('index') }}" id="balanceForm">
                     <div class="form-group mb-3">
                         <label for="net_balance" class="form-label">الرصيد الصافي (بالجنيه):</label>
-                        <input type="number" class="form-control" id="net_balance" name="net_balance" min="50" required>
+                        <input type="number" inputmode="numeric" pattern="[0-9]*" class="form-control" id="net_balance" name="net_balance" min="50" required>
                         <small class="form-text text-muted">أدخل الرصيد الصافي الذي تريد شحنه (بدون ضرائب)</small>
                     </div>
-                    <button type="submit" class="btn btn-primary">حساب التكلفة</button>
+                    <button type="submit" class="btn btn-primary" id="calculateBtn">حساب التكلفة</button>
                 </form>
+
+                <script>
+                    // تحسين التوافق مع أجهزة Android
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var form = document.getElementById('balanceForm');
+                        var calculateBtn = document.getElementById('calculateBtn');
+                        var inputField = document.getElementById('net_balance');
+
+                        // التأكد من أن الإدخال رقمي فقط
+                        inputField.addEventListener('input', function(e) {
+                            this.value = this.value.replace(/[^0-9]/g, '');
+                        });
+
+                        // معالجة النقر على زر الحساب
+                        calculateBtn.addEventListener('click', function(e) {
+                            // التحقق من صحة الإدخال
+                            var value = parseInt(inputField.value);
+                            if (isNaN(value) || value < 50) {
+                                alert('أقل قيمة لشحن رصيد صافي هي 50 جنيه!');
+                                e.preventDefault();
+                                return false;
+                            }
+
+                            // تقديم النموذج يدوياً
+                            form.submit();
+                        });
+                    });
+                </script>
             </div>
         </div>
     </div>

@@ -70,7 +70,55 @@ def send_order_email(order_details):
         msg['To'] = app.config['NOTIFICATION_EMAIL']
         msg['Subject'] = "طلب جديد - خدمة شحن الرصيد"
 
-        # إضافة محتوى الرسالة
+        # استخدام نفس تنسيق رسالة الواتساب للبريد الإلكتروني بالضبط
+        # تحويل النص إلى تنسيق HTML للحفاظ على التنسيق
+
+        # تقسيم الرسالة إلى أسطر
+        lines = order_details.split('\n')
+
+        # إنشاء محتوى HTML منظم
+        formatted_content = ""
+        for line in lines:
+            if line.startswith("طلب جديد!"):
+                formatted_content += f'<div class="order-item order-title">{line}</div>'
+            elif ":" in line:
+                # تقسيم السطر إلى عنوان وقيمة
+                parts = line.split(":", 1)
+                if len(parts) == 2:
+                    label = parts[0].strip()
+                    value = parts[1].strip()
+                    formatted_content += f'<div class="order-item"><strong>{label}:</strong> {value}</div>'
+            else:
+                # إذا لم يكن هناك ":" في السطر، أضفه كما هو
+                if line.strip():  # تجاهل الأسطر الفارغة
+                    formatted_content += f'<div class="order-item">{line}</div>'
+
+        html_content = f"""
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; direction: rtl; text-align: right; }}
+                .order-details {{ background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; max-width: 600px; margin: 0 auto; }}
+                .order-title {{ color: #28a745; font-size: 22px; font-weight: bold; margin-bottom: 15px; }}
+                .order-item {{ margin-bottom: 10px; font-size: 16px; }}
+                .footer {{ margin-top: 20px; font-size: 14px; color: #777; text-align: center; }}
+            </style>
+        </head>
+        <body>
+            <div class="order-details">
+                {formatted_content}
+                <div class="footer">
+                    <p>خدمة شحن الرصيد - dareba.onrender.com</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+
+        # إضافة نسخة HTML ونسخة نصية للبريد
+        msg.attach(MIMEText(html_content, 'html', 'utf-8'))
+        # إضافة نسخة نصية كاحتياط للعملاء الذين لا يدعمون HTML
         msg.attach(MIMEText(order_details, 'plain', 'utf-8'))
 
         # إعداد خادم SMTP
@@ -110,7 +158,7 @@ class Order(db.Model):
     total_cost = db.Column(db.Float, nullable=False)
     receipt_image = db.Column(db.String(255), nullable=True)
     status = db.Column(db.String(20), default='pending')
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(pytz.UTC).astimezone(pytz.timezone('Africa/Cairo')).replace(hour=(datetime.now(pytz.timezone('Africa/Cairo')).hour - 1) % 24))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(pytz.UTC).astimezone(pytz.timezone('Africa/Cairo')))
 
     def __repr__(self):
         return f'<Order {self.id}>'
@@ -126,7 +174,21 @@ BOT_TAX_RATE = 0.22      # ضريبة البوت 22%
 def index():
     if request.method == 'POST':
         try:
-            net_balance = float(request.form['net_balance'])
+            # طباعة البيانات المستلمة للتشخيص
+            print(f"بيانات النموذج المستلمة: {request.form}")
+
+            # التحقق من وجود قيمة الرصيد
+            if 'net_balance' not in request.form or not request.form['net_balance']:
+                flash('من فضلك أدخل قيمة الرصيد الصافي', 'danger')
+                return render_template('index.html')
+
+            # تنظيف القيمة المدخلة والتأكد من أنها رقمية
+            net_balance_str = request.form['net_balance'].strip()
+            if not net_balance_str.isdigit():
+                flash('من فضلك أدخل رقم صحيح فقط!', 'danger')
+                return render_template('index.html')
+
+            net_balance = float(net_balance_str)
 
             # التحقق من أن الرصيد لا يقل عن 50 جنيه
             if net_balance < 50:
@@ -140,14 +202,21 @@ def index():
             total_bot_exact = net_balance + (net_balance * BOT_TAX_RATE)
             total_bot = round(total_bot_exact)
 
+            print(f"تم حساب التكلفة: الرصيد={net_balance}, التكلفة={total_bot}")
+
             # حفظ البيانات في الجلسة
             session['net_balance'] = net_balance
             session['total_vodafone'] = total_vodafone
             session['total_bot'] = total_bot
 
+            # تعيين الجلسة كدائمة لتجنب فقدان البيانات
+            session.permanent = True
+
+            print("تم حفظ البيانات في الجلسة، جاري التوجيه إلى صفحة التأكيد")
             return redirect(url_for('confirm'))
-        except ValueError:
-            flash('من فضلك أدخل رقم صحيح!', 'danger')
+        except Exception as e:
+            print(f"حدث خطأ أثناء معالجة النموذج: {str(e)}")
+            flash('حدث خطأ أثناء معالجة طلبك. من فضلك حاول مرة أخرى.', 'danger')
 
     return render_template('index.html')
 
@@ -178,7 +247,12 @@ def confirm():
         # تجهيز رسالة واتساب
         # تحويل الوقت إلى توقيت القاهرة بنظام 12 ساعة
         utc_now = datetime.now(pytz.UTC)
+        # تحويل إلى توقيت القاهرة
         cairo_time = utc_now.astimezone(pytz.timezone('Africa/Cairo'))
+        # تنقيص ساعتين من الوقت
+        from datetime import timedelta
+        cairo_time = cairo_time - timedelta(hours=2)
+        # تنسيق الوقت بنظام 12 ساعة
         formatted_time = cairo_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
 
         # إنشاء نص الرسالة
@@ -287,6 +361,10 @@ def thank_you():
                 # إنشاء رسالة واتساب من بيانات الطلب
                 # تحويل الوقت إلى توقيت القاهرة بنظام 12 ساعة
                 cairo_time = last_order.created_at.astimezone(pytz.timezone('Africa/Cairo'))
+                # تنقيص ساعتين من الوقت
+                from datetime import timedelta
+                cairo_time = cairo_time - timedelta(hours=2)
+                # تنسيق الوقت بنظام 12 ساعة
                 formatted_time = cairo_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
 
                 # إنشاء نص الرسالة
@@ -309,6 +387,7 @@ def thank_you():
 
                 # حفظ الرسالة في ملف
                 try:
+                    temp_dir = 'temp_messages'
                     message_file = os.path.join(temp_dir, f'order_{last_order.id}.txt')
                     with open(message_file, 'w', encoding='utf-8') as f:
                         f.write(whatsapp_message)
@@ -390,4 +469,4 @@ with app.app_context():
 # تشغيل التطبيق
 if __name__ == '__main__':
     # تفعيل وضع التصحيح للتطوير المحلي فقط
-    app.run(debug=True, port=5001, host='0.0.0.0')
+    app.run(debug=True, port=8080, host='0.0.0.0')

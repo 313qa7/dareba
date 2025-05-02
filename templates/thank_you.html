@@ -80,15 +80,8 @@
             console.log("محاولة فتح رابط الواتساب الأساسي:", primaryUrl);
 
             try {
-                // محاولة فتح الرابط في نافذة جديدة
-                var newWindow = window.open(primaryUrl, '_blank');
-
-                // التحقق من نجاح فتح النافذة
-                if (!newWindow || newWindow.closed || typeof newWindow.closed=='undefined') {
-                    console.log("فشل فتح الرابط الأساسي، جاري استخدام الرابط الاحتياطي");
-                    // إذا فشل، استخدم رابط بديل
-                    window.location.href = fallbackUrl;
-                }
+                // استخدام window.location.href بدلاً من window.open لتجنب فتح نافذتين
+                window.location.href = primaryUrl;
             } catch (e) {
                 console.error("حدث خطأ أثناء فتح رابط الواتساب:", e);
                 // في حالة حدوث خطأ، استخدم الرابط الاحتياطي

@@ -2,7 +2,11 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#28a745">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>{% block title %}خدمة شحن الرصيد{% endblock %}</title>
 
     <!-- SEO Meta Tags -->
@@ -40,12 +44,19 @@
     {% block head %}{% endblock %}
 </head>
 <body>
-    <div class="prayer-banner text-center py-2 mb-3">
+    <div class="prayer-banner text-center py-2 mb-2">
         <h5 class="mb-0 animate__animated animate__flash animate__infinite animate__slow">
             <i class="bi bi-star-fill text-warning me-2"></i>
             كسبان اللي يوحد الله و يصلي على النبي
             <i class="bi bi-star-fill text-warning ms-2"></i>
         </h5>
+    </div>
+
+    <div class="support-banner text-center py-2 mb-3">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="bi bi-whatsapp text-success me-2 fs-4"></i>
+            <p class="mb-0">اذا واجهتك أي مشكلة في الموقع يرجى التواصل عبر واتساب على <strong>01012874414</strong></p>
+        </div>
     </div>
 
     <div class="container">
