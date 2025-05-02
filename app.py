@@ -278,12 +278,23 @@ def thank_you():
     # طباعة رسالة الواتساب للتأكد من وجودها
     print(f"رسالة الواتساب في صفحة الشكر: {whatsapp_message}")
 
+    # طباعة الرسالة بتنسيق مناسب للتشخيص
+    formatted_message = whatsapp_message.replace('\n', '\\n')
+    print(f"الرسالة المنسقة: {formatted_message}")
+
     # تشفير الرسالة لاستخدامها في رابط الواتساب
     encoded_message = urllib.parse.quote(whatsapp_message)
+
+    # طباعة الرسالة المشفرة للتشخيص
+    print(f"الرسالة المشفرة: {encoded_message}")
 
     # إنشاء روابط الواتساب (نستخدم عدة صيغ للتوافق مع مختلف الأجهزة)
     whatsapp_url = f"https://api.whatsapp.com/send?phone=201012874414&text={encoded_message}"
     whatsapp_url_alt = f"https://wa.me/201012874414?text={encoded_message}"
+
+    # طباعة الروابط للتشخيص
+    print(f"رابط الواتساب الأساسي: {whatsapp_url_alt}")
+    print(f"رابط الواتساب الاحتياطي: {whatsapp_url}")
 
     # تمرير المعلومات إلى القالب
     return render_template('thank_you.html',
