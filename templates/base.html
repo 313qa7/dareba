@@ -140,183 +140,13 @@
             }
         }
 
-        /* أنماط الإعلانات الجانبية */
-        .sidebar-ads {
-            position: sticky;
-            top: 20px;
-            max-height: 100vh;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #ddd #f5f5f5;
-        }
 
-        .sidebar-ads::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar-ads::-webkit-scrollbar-track {
-            background: #f5f5f5;
-        }
-
-        .sidebar-ads::-webkit-scrollbar-thumb {
-            background-color: #ddd;
-            border-radius: 6px;
-        }
-
-        .ads-container {
-            padding: 10px;
-        }
-
-        .ad-placeholder {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            opacity: 0.85;
-            transform: translateY(10px);
-        }
-
-        .ad-placeholder.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .ad-placeholder:hover {
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px) scale(1.01);
-        }
-
-        .ad-unit {
-            min-height: 250px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .ad-label {
-            background-color: rgba(0,0,0,0.05);
-            color: #666;
-            font-size: 12px;
-            padding: 2px 8px;
-            text-align: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        .ad-space {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            min-height: 250px;
-            background-color: white;
-        }
-
-        /* محتوى مؤقت للإعلانات */
-        .temp-ad-content {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .placeholder-img {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #f5f5f5 25%, #e0e0e0 25%, #e0e0e0 50%, #f5f5f5 50%, #f5f5f5 75%, #e0e0e0 75%);
-            background-size: 20px 20px;
-            animation: moveBackground 30s linear infinite;
-            border-radius: 4px;
-        }
-
-        /* أنماط الإعلانات الأفقية */
-        .horizontal-ad {
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
-            opacity: 0.9;
-            transform: translateY(10px);
-        }
-
-        .horizontal-ad.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .horizontal-ad:hover {
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-
-        .ad-space-horizontal {
-            min-height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 15px;
-            background-color: white;
-        }
-
-        .placeholder-img-horizontal {
-            width: 100%;
-            height: 90px;
-            background: linear-gradient(90deg, #f5f5f5 25%, #e0e0e0 25%, #e0e0e0 50%, #f5f5f5 50%, #f5f5f5 75%, #e0e0e0 75%);
-            background-size: 20px 20px;
-            animation: moveBackgroundHorizontal 20s linear infinite;
-            border-radius: 4px;
-        }
-
-        @keyframes moveBackgroundHorizontal {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 1000px 0;
-            }
-        }
-
-        @keyframes moveBackground {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 500px 500px;
-            }
-        }
-
-        /* تحسينات للتجاوب مع الشاشات المختلفة */
-        @media (max-width: 992px) {
-            .sidebar-ads {
-                position: static;
-                margin-bottom: 20px;
-            }
-
-            .ad-unit {
-                min-height: 100px;
-            }
-
-            .ad-space {
-                min-height: 100px;
-            }
-
-            .placeholder-img {
-                height: 100px;
-            }
-        }
     </style>
 
     {% block head %}{% endblock %}
 
     <!-- كود Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5129063652941579" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="prayer-banner text-center py-2 mb-2">
@@ -348,84 +178,20 @@
     </div>
 
     <div class="container">
-        <div class="row">
-            <!-- المحتوى الرئيسي -->
-            <div class="col-lg-9 order-lg-1 order-2">
-                <div class="header">
-                    <h1 style="color: #28a745;">خدمة شحن الرصيد</h1>
-                    <p>احصل على رصيد بأقل تكلفة</p>
-                </div>
-
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }}">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
-
-                {% block content %}{% endblock %}
-            </div>
-
-            <!-- شريط الإعلانات الجانبي -->
-            <div class="col-lg-3 order-lg-2 order-1 mb-4">
-                <div class="sidebar-ads">
-                    <div class="ads-container">
-                        <!-- الإعلان الأول (ثابت في الأعلى) -->
-                        <div class="ad-placeholder">
-                            <div class="ad-unit">
-                                <div class="ad-label">إعلان</div>
-                                <div id="sidebar-ad-1" class="ad-space">
-                                    <div class="temp-ad-content">
-                                        <p class="text-muted text-center">مساحة إعلانية</p>
-                                        <div class="placeholder-img"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- الإعلان الثاني -->
-                        <div class="ad-placeholder mt-4">
-                            <div class="ad-unit">
-                                <div class="ad-label">إعلان</div>
-                                <div id="sidebar-ad-2" class="ad-space">
-                                    <div class="temp-ad-content">
-                                        <p class="text-muted text-center">مساحة إعلانية</p>
-                                        <div class="placeholder-img"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- الإعلان الثالث -->
-                        <div class="ad-placeholder mt-4">
-                            <div class="ad-unit">
-                                <div class="ad-label">إعلان</div>
-                                <div id="sidebar-ad-3" class="ad-space">
-                                    <div class="temp-ad-content">
-                                        <p class="text-muted text-center">مساحة إعلانية</p>
-                                        <div class="placeholder-img"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- الإعلان الرابع -->
-                        <div class="ad-placeholder mt-4">
-                            <div class="ad-unit">
-                                <div class="ad-label">إعلان</div>
-                                <div id="sidebar-ad-4" class="ad-space">
-                                    <div class="temp-ad-content">
-                                        <p class="text-muted text-center">مساحة إعلانية</p>
-                                        <div class="placeholder-img"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="header">
+            <h1 style="color: #28a745;">خدمة شحن الرصيد</h1>
+            <p>احصل على رصيد بأقل تكلفة</p>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
     </div>
 
     <!-- Defer non-critical JavaScript -->
@@ -434,96 +200,7 @@
     <!-- Service Worker Registration -->
     <script src="{{ url_for('static', filename='js/sw-register.js') }}" defer></script>
 
-    <!-- كود تحميل إعلانات Google AdSense -->
-    <script>
-        window.addEventListener('load', function() {
-            // تحميل الإعلان الأول
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('sidebar-ad-1')
-            });
 
-            // تحميل الإعلان الثاني
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('sidebar-ad-2')
-            });
-
-            // تحميل الإعلان الثالث
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('sidebar-ad-3')
-            });
-
-            // تحميل الإعلان الرابع
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('sidebar-ad-4')
-            });
-
-            // تحميل الإعلانات الأفقية
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('horizontal-ad-1')
-            });
-
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('horizontal-ad-2')
-            });
-
-            (adsbygoogle = window.adsbygoogle || []).push({
-                google_ad_client: "ca-pub-XXXXXXXXXXXXXXXX",
-                enable_page_level_ads: true,
-                ad_slot: "XXXXXXXXXX",
-                element: document.getElementById('horizontal-ad-3')
-            });
-
-            // تحسين تجربة المستخدم مع الإعلانات
-            function checkVisibility() {
-                // الحصول على جميع الإعلانات الجانبية
-                var sideAds = document.querySelectorAll('.ad-placeholder');
-                // الحصول على جميع الإعلانات الأفقية
-                var horizontalAds = document.querySelectorAll('.horizontal-ad');
-
-                // دمج جميع الإعلانات في مصفوفة واحدة
-                var allAds = [...sideAds, ...horizontalAds];
-
-                // التحقق من ظهور كل إعلان في نطاق الرؤية
-                allAds.forEach(function(ad) {
-                    var rect = ad.getBoundingClientRect();
-                    var isInViewport = (
-                        rect.top <= (window.innerHeight || document.documentElement.clientHeight) &&
-                        rect.bottom >= 0 &&
-                        rect.left <= (window.innerWidth || document.documentElement.clientWidth) &&
-                        rect.right >= 0
-                    );
-
-                    // إضافة أو إزالة فئة "visible" بناءً على الرؤية
-                    if (isInViewport) {
-                        ad.classList.add('visible');
-                    }
-                });
-            }
-
-            // التحقق من الرؤية عند التمرير
-            window.addEventListener('scroll', checkVisibility);
-            // التحقق من الرؤية عند تحميل الصفحة
-            checkVisibility();
-        });
-    </script>
 
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
