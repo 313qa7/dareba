@@ -4,43 +4,20 @@
 
 {% block head %}
 <script>
-    // عند تحميل الصفحة
-    window.onload = function() {
+    // تحسين أداء JavaScript - استخدام DOMContentLoaded بدلاً من window.onload
+    document.addEventListener('DOMContentLoaded', function() {
         // الحصول على الروابط والرسائل من الخادم
         var whatsappMessage = `{{ whatsapp_message|replace('\n', '\\n')|safe }}`;
         var primaryUrl = "{{ whatsapp_url_alt }}";  // رابط wa.me
         var fallbackUrl = "{{ whatsapp_url }}";     // رابط api.whatsapp.com
 
-        console.log("رسالة الواتساب:", whatsappMessage);
-        console.log("رابط الواتساب الأساسي:", primaryUrl);
-        console.log("رابط الواتساب الاحتياطي:", fallbackUrl);
-
-        // التحقق من وجود الرسالة
-        if (!whatsappMessage || whatsappMessage.includes("لم يتم العثور على تفاصيل الطلب")) {
-            console.error("لم يتم العثور على تفاصيل الطلب!");
+        // تحديث زر الواتساب الرئيسي فوراً
+        var mainButton = document.getElementById('whatsapp-button');
+        if (mainButton) {
+            mainButton.setAttribute('data-url', primaryUrl);
+            mainButton.setAttribute('data-fallback', fallbackUrl);
         }
-
-        // تحديث عناصر الصفحة بالروابط
-        setTimeout(function() {
-            // تحديث زر الواتساب الرئيسي
-            var mainButton = document.getElementById('whatsapp-button');
-            if (mainButton) {
-                mainButton.setAttribute('data-url', primaryUrl);
-                mainButton.setAttribute('data-fallback', fallbackUrl);
-                console.log("تم تحديث زر الواتساب الرئيسي");
-            }
-
-            // تحديث الرابط الاحتياطي
-            var altLink = document.getElementById('whatsapp-link-alt');
-            if (altLink) {
-                altLink.setAttribute('data-url', primaryUrl);
-                altLink.setAttribute('data-fallback', fallbackUrl);
-                console.log("تم تحديث رابط الواتساب الاحتياطي");
-            }
-
-            // تم إزالة التوجيه التلقائي - سيتم فتح الواتساب فقط عند الضغط على الزر
-        }, 500); // انتظار نصف ثانية للتأكد من تحميل الصفحة
-    }
+    });
 </script>
 {% endblock %}
 
@@ -64,49 +41,21 @@
         </a>
     </div>
 
-    <!-- رابط احتياطي في حالة عدم عمل الزر الأول -->
-    <div class="text-center mb-3">
-        <small>إذا لم يعمل الزر أعلاه، يمكنك <a href="#" id="whatsapp-link-alt" onclick="sendWhatsApp()">الضغط هنا</a></small>
-    </div>
+    <!-- تم إزالة الرابط الاحتياطي بناءً على طلب العميل -->
 
     <script>
-        // دالة لإرسال رسالة واتساب
+        // دالة محسنة لإرسال رسالة واتساب
         function sendWhatsApp() {
-            // الحصول على الروابط من السمات أو استخدام الروابط المباشرة
             var button = document.getElementById('whatsapp-button');
             var primaryUrl = button ? button.getAttribute('data-url') : "{{ whatsapp_url_alt }}";
-            var fallbackUrl = button ? button.getAttribute('data-fallback') : "{{ whatsapp_url }}";
 
-            console.log("محاولة فتح رابط الواتساب الأساسي:", primaryUrl);
-
-            try {
-                // استخدام window.location.href بدلاً من window.open لتجنب فتح نافذتين
-                window.location.href = primaryUrl;
-            } catch (e) {
-                console.error("حدث خطأ أثناء فتح رابط الواتساب:", e);
-                // في حالة حدوث خطأ، استخدم الرابط الاحتياطي
-                window.location.href = fallbackUrl;
-            }
-
+            // استخدام الرابط الأساسي مباشرة لتحسين الأداء
+            window.location.href = primaryUrl;
             return false;
         }
     </script>
 
-    <!-- للتأكد من وجود الروابط (مخفي) -->
-    <div style="display: none;">
-        <div id="whatsapp-url-primary-debug">{{ whatsapp_url_alt }}</div>
-        <div id="whatsapp-url-fallback-debug">{{ whatsapp_url }}</div>
-    </div>
-
-    <!-- للتأكد من وجود الرسالة (مخفي) -->
-    <div style="display: none;" id="whatsapp-message-debug">
-        {{ whatsapp_message }}
-    </div>
-
-    <!-- للتأكد من وجود الرابط (مخفي) -->
-    <div style="display: none;" id="whatsapp-url-debug">
-        {{ whatsapp_url }}
-    </div>
+    <!-- تم إزالة العناصر المخفية غير الضرورية لتحسين الأداء -->
 
     <p>سيتم شحن رصيدك خلال بضع دقائق و خلال 30 دقيقة كحد أقصى من وقت تأكيد التحويل.</p>
 

@@ -158,7 +158,7 @@ class Order(db.Model):
     total_cost = db.Column(db.Float, nullable=False)
     receipt_image = db.Column(db.String(255), nullable=True)
     status = db.Column(db.String(20), default='pending')
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(pytz.UTC).astimezone(pytz.timezone('Africa/Cairo')))
+    created_at = db.Column(db.DateTime, default=datetime.now)
 
     def __repr__(self):
         return f'<Order {self.id}>'
@@ -245,15 +245,10 @@ def confirm():
         print(f"تم إنشاء طلب جديد برقم: {new_order.id}")
 
         # تجهيز رسالة واتساب
-        # تحويل الوقت إلى توقيت القاهرة بنظام 12 ساعة
-        utc_now = datetime.now(pytz.UTC)
-        # تحويل إلى توقيت القاهرة
-        cairo_time = utc_now.astimezone(pytz.timezone('Africa/Cairo'))
-        # تنقيص ساعتين من الوقت
-        from datetime import timedelta
-        cairo_time = cairo_time - timedelta(hours=2)
+        # استخدام الوقت المحلي مباشرة بدون أي تعديلات
+        local_time = datetime.now()  # الوقت المحلي على الخادم
         # تنسيق الوقت بنظام 12 ساعة
-        formatted_time = cairo_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
+        formatted_time = local_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
 
         # إنشاء نص الرسالة
         message = (
@@ -359,13 +354,9 @@ def thank_you():
             if last_order:
                 print(f"تم العثور على آخر طلب في قاعدة البيانات برقم: {last_order.id}")
                 # إنشاء رسالة واتساب من بيانات الطلب
-                # تحويل الوقت إلى توقيت القاهرة بنظام 12 ساعة
-                cairo_time = last_order.created_at.astimezone(pytz.timezone('Africa/Cairo'))
-                # تنقيص ساعتين من الوقت
-                from datetime import timedelta
-                cairo_time = cairo_time - timedelta(hours=2)
+                # استخدام الوقت المخزن في قاعدة البيانات
                 # تنسيق الوقت بنظام 12 ساعة
-                formatted_time = cairo_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
+                formatted_time = last_order.created_at.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
 
                 # إنشاء نص الرسالة
                 recovered_message = (

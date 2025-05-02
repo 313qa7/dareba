@@ -65,16 +65,16 @@
                 </form>
 
                 <script>
-                    // عند تقديم النموذج الرئيسي، نقوم بنسخ البيانات إلى نموذج البريد الإلكتروني وإرساله
-                    document.querySelector('form').addEventListener('submit', function(e) {
-                        // نسخ البيانات إلى نموذج البريد الإلكتروني
-                        document.getElementById('email_name').value = document.getElementById('user_name').value;
-                        document.getElementById('email_phone').value = document.getElementById('user_phone').value;
-
-                        // إرسال نموذج البريد الإلكتروني
-                        setTimeout(function() {
-                            document.getElementById('emailForm').submit();
-                        }, 1000);
+                    // تحسين أداء JavaScript - استخدام DOMContentLoaded
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var mainForm = document.querySelector('form');
+                        if (mainForm) {
+                            mainForm.addEventListener('submit', function(e) {
+                                // نسخ البيانات إلى نموذج البريد الإلكتروني بشكل مباشر
+                                document.getElementById('email_name').value = document.getElementById('user_name').value;
+                                document.getElementById('email_phone').value = document.getElementById('user_phone').value;
+                            });
+                        }
                     });
                 </script>
             </div>

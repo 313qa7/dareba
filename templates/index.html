@@ -23,30 +23,30 @@
                 </form>
 
                 <script>
-                    // تحسين التوافق مع أجهزة Android
+                    // تحسين التوافق مع جميع الأجهزة وتسريع الأداء
                     document.addEventListener('DOMContentLoaded', function() {
                         var form = document.getElementById('balanceForm');
                         var calculateBtn = document.getElementById('calculateBtn');
                         var inputField = document.getElementById('net_balance');
 
-                        // التأكد من أن الإدخال رقمي فقط
-                        inputField.addEventListener('input', function(e) {
-                            this.value = this.value.replace(/[^0-9]/g, '');
-                        });
+                        if (inputField) {
+                            // استخدام passive: true لتحسين الأداء على الأجهزة اللمسية
+                            inputField.addEventListener('input', function(e) {
+                                this.value = this.value.replace(/[^0-9]/g, '');
+                            }, { passive: true });
+                        }
 
-                        // معالجة النقر على زر الحساب
-                        calculateBtn.addEventListener('click', function(e) {
-                            // التحقق من صحة الإدخال
-                            var value = parseInt(inputField.value);
-                            if (isNaN(value) || value < 50) {
-                                alert('أقل قيمة لشحن رصيد صافي هي 50 جنيه!');
-                                e.preventDefault();
-                                return false;
-                            }
-
-                            // تقديم النموذج يدوياً
-                            form.submit();
-                        });
+                        if (form) {
+                            form.addEventListener('submit', function(e) {
+                                // التحقق من صحة الإدخال
+                                var value = parseInt(inputField.value);
+                                if (isNaN(value) || value < 50) {
+                                    e.preventDefault();
+                                    alert('أقل قيمة لشحن رصيد صافي هي 50 جنيه!');
+                                    return false;
+                                }
+                            });
+                        }
                     });
                 </script>
             </div>
@@ -158,6 +158,24 @@
                             <p>سيتم شحن رصيد فودافون الخاص بك خلال دقائق من استلام صورة التحويل.</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center mb-4">شحن رصيد فودافون بدون ضريبة</h3>
+                <div class="content">
+                    <p>تقدم خدمتنا <strong>شحن رصيد فودافون</strong> بطريقة مميزة تتيح لك الحصول على <strong>رصيد صافي بدون ضريبة</strong>. نحن نتفهم أن <strong>ضريبة الرصيد</strong> تمثل عبئاً إضافياً على المستخدمين، لذلك نقدم لك خدمة <strong>شحن رصيد فودافون بخصم</strong> يصل إلى 21% من قيمة الرصيد.</p>
+
+                    <p>عندما تقوم بـ <strong>شحن رصيد</strong> من خلال خدمتنا، فأنت تحصل على <strong>رصيد صافي</strong> يمكنك استخدامه بالكامل دون اقتطاع أي <strong>ضريبة</strong> إضافية. هذا يعني أنك إذا طلبت شحن رصيد بقيمة 100 جنيه، فستحصل على 100 جنيه رصيد فعلي يمكنك استخدامه، وليس أقل من ذلك بسبب الضرائب.</p>
+
+                    <p>خدمة <strong>شحن رصيد فودافون</strong> لدينا متاحة على مدار الساعة، مما يتيح لك <strong>شحن رصيدك</strong> في أي وقت تحتاج إليه. نحن نضمن لك <strong>شحن سريع</strong> وآمن لرصيدك، مع توفير دعم فني متميز للإجابة على جميع استفساراتك.</p>
+
+                    <p>لا تدع <strong>ضريبة الرصيد</strong> تستهلك أموالك بعد الآن، واستفد من خدمتنا المميزة لـ <strong>شحن رصيد فودافون بدون ضريبة</strong>. ابدأ الآن واحصل على <strong>رصيد صافي</strong> بأفضل الأسعار!</p>
                 </div>
             </div>
         </div>

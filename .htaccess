@@ -13,12 +13,28 @@ Options -Indexes
     Deny from all
 </FilesMatch>
 
-# حماية ضد هجمات XSS
+# حماية ضد هجمات XSS وتحسين الأداء
 <IfModule mod_headers.c>
     Header set X-XSS-Protection "1; mode=block"
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
     Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:;"
+
+    # تحسين الأداء
+    Header set Connection "keep-alive"
+    Header set Keep-Alive "timeout=5, max=100"
+
+    # تحسين الأمان
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # تحسين التخزين المؤقت
+    <FilesMatch "\.(ico|pdf|jpg|jpeg|png|gif|js|css|svg)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "max-age=86400, public"
+    </FilesMatch>
 </IfModule>
 
 # إعادة توجيه كل الطلبات للملفات الحساسة إلى الصفحة الرئيسية
@@ -61,18 +77,18 @@ ErrorDocument 500 /500.html
 <IfModule mod_rewrite.c>
     RewriteEngine on
     RewriteCond %{HTTP_REFERER} !^$
-    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?dareba.com [NC]
+    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?dareba.onrender.com [NC]
     RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google.com [NC]
     RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook.com [NC]
     RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?twitter.com [NC]
     RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
 </IfModule>
 
-# Redirect non-www to www
+# Redirect to correct domain
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{HTTP_HOST} ^dareba\.com [NC]
-    RewriteRule ^(.*)$ https://www.dareba.com/$1 [L,R=301]
+    RewriteCond %{HTTP_HOST} !^dareba\.onrender\.com$ [NC]
+    RewriteRule ^(.*)$ https://dareba.onrender.com/$1 [L,R=301]
 </IfModule>
 
 # Add trailing slash to directories

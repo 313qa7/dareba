@@ -2,44 +2,56 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="format-detection" content="telephone=no">
     <meta name="theme-color" content="#28a745">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="application-name" content="شحن رصيد">
+    <meta name="apple-mobile-web-app-title" content="شحن رصيد">
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/icon-192x192.png') }}">
     <title>{% block title %}خدمة شحن الرصيد{% endblock %}</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="خدمة شحن رصيد فودافون بأقل تكلفة - وفر 23% من قيمة الرصيد مع خدمة شحن سريعة وآمنة على مدار الساعة">
-    <meta name="keywords" content="شحن رصيد, فودافون, توفير, رصيد فودافون, شحن رصيد بخصم, شحن رصيد مصر, شحن فودافون, خصم على الرصيد">
+    <meta name="description" content="خدمة شحن رصيد فودافون بأقل تكلفة - وفر 23% من قيمة الرصيد مع خدمة شحن سريعة وآمنة على مدار الساعة. رصيد صافي بدون ضريبة.">
+    <meta name="keywords" content="شحن رصيد, فودافون, توفير, رصيد فودافون, شحن رصيد بخصم, شحن رصيد مصر, شحن فودافون, خصم على الرصيد, رصيد صافي, بدون ضريبة, ضريبة الرصيد, شحن رصيد فودافون, رصيد فودافون بخصم, شحن رصيد بدون ضريبة, شحن رصيد فودافون بدون ضريبة, شحن رصيد فودافون بخصم">
     <meta name="author" content="خدمة شحن الرصيد">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
     <!-- Open Graph Meta Tags for Social Media -->
-    <meta property="og:title" content="خدمة شحن رصيد فودافون - وفر 23% من قيمة الرصيد">
-    <meta property="og:description" content="احصل على رصيد فودافون بأقل تكلفة مع خدمة شحن سريعة وآمنة على مدار الساعة">
+    <meta property="og:title" content="خدمة شحن رصيد فودافون - وفر 23% من قيمة الرصيد - رصيد صافي بدون ضريبة">
+    <meta property="og:description" content="احصل على رصيد فودافون بأقل تكلفة مع خدمة شحن سريعة وآمنة على مدار الساعة. رصيد صافي بدون ضريبة. شحن رصيد فودافون بخصم.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.dareba.com/">
-    <meta property="og:image" content="https://www.dareba.com/static/images/logo.png">
+    <meta property="og:url" content="https://dareba.onrender.com/">
+    <meta property="og:image" content="https://dareba.onrender.com/static/images/logo.png">
 
     <!-- Twitter Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="خدمة شحن رصيد فودافون - وفر 23% من قيمة الرصيد">
-    <meta name="twitter:description" content="احصل على رصيد فودافون بأقل تكلفة مع خدمة شحن سريعة وآمنة على مدار الساعة">
-    <meta name="twitter:image" content="https://www.dareba.com/static/images/logo.png">
+    <meta name="twitter:title" content="خدمة شحن رصيد فودافون - وفر 23% من قيمة الرصيد - رصيد صافي بدون ضريبة">
+    <meta name="twitter:description" content="احصل على رصيد فودافون بأقل تكلفة مع خدمة شحن سريعة وآمنة على مدار الساعة. رصيد صافي بدون ضريبة. شحن رصيد فودافون بخصم.">
+    <meta name="twitter:image" content="https://dareba.onrender.com/static/images/logo.png">
 
     <!-- Canonical URL -->
-    <link rel="canonical" href="https://www.dareba.com{{ request.path }}">
+    <link rel="canonical" href="https://dareba.onrender.com{{ request.path }}">
 
     <!-- Favicon -->
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css" as="style">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" as="style">
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.min.css') }}">
 
     {% block head %}{% endblock %}
 </head>
@@ -76,21 +88,26 @@
         {% block content %}{% endblock %}
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Defer non-critical JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" defer></script>
+
+    <!-- Service Worker Registration -->
+    <script src="{{ url_for('static', filename='js/sw-register.js') }}" defer></script>
 
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      "name": "خدمة شحن رصيد فودافون",
-      "url": "https://www.dareba.com/",
-      "description": "خدمة شحن رصيد فودافون بأقل تكلفة - وفر 23% من قيمة الرصيد مع خدمة شحن سريعة وآمنة على مدار الساعة",
+      "name": "خدمة شحن رصيد فودافون - رصيد صافي بدون ضريبة",
+      "url": "https://dareba.onrender.com/",
+      "description": "خدمة شحن رصيد فودافون بأقل تكلفة - وفر 23% من قيمة الرصيد مع خدمة شحن سريعة وآمنة على مدار الساعة. رصيد صافي بدون ضريبة.",
       "potentialAction": {
         "@type": "SearchAction",
-        "target": "https://www.dareba.com/search?q={search_term_string}",
+        "target": "https://dareba.onrender.com/search?q={search_term_string}",
         "query-input": "required name=search_term_string"
-      }
+      },
+      "keywords": "شحن رصيد, فودافون, توفير, رصيد فودافون, شحن رصيد بخصم, شحن رصيد مصر, شحن فودافون, خصم على الرصيد, رصيد صافي, بدون ضريبة, ضريبة الرصيد"
     }
     </script>
 
@@ -98,9 +115,10 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "خدمة شحن رصيد فودافون",
-      "url": "https://www.dareba.com/",
-      "logo": "https://www.dareba.com/static/images/logo.png",
+      "name": "خدمة شحن رصيد فودافون - رصيد صافي بدون ضريبة",
+      "url": "https://dareba.onrender.com/",
+      "logo": "https://dareba.onrender.com/static/images/logo.png",
+      "description": "خدمة شحن رصيد فودافون بأقل تكلفة - وفر 23% من قيمة الرصيد مع خدمة شحن سريعة وآمنة على مدار الساعة. رصيد صافي بدون ضريبة.",
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+201012874414",
@@ -111,7 +129,12 @@
         "https://www.facebook.com/dareba",
         "https://www.instagram.com/dareba",
         "https://twitter.com/dareba"
-      ]
+      ],
+      "offers": {
+        "@type": "Offer",
+        "description": "شحن رصيد فودافون بخصم 23% - رصيد صافي بدون ضريبة",
+        "priceCurrency": "EGP"
+      }
     }
     </script>
 </body>

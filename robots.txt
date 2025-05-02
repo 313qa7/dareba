@@ -8,4 +8,4 @@ Allow: /confirm
 Allow: /thank_you
 
 # Sitemap location
-Sitemap: https://www.dareba.com/sitemap.xml
+Sitemap: https://dareba.onrender.com/sitemap.xml
