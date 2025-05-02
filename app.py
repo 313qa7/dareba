@@ -30,6 +30,10 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # لمنع الوصول للكوك
 app.config['SESSION_TYPE'] = 'filesystem'  # تخزين الجلسة في ملفات
 app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # مدة الجلسة بالثواني (ساعة واحدة)
 
+# إنشاء المجلدات الضرورية
+os.makedirs('temp_messages', exist_ok=True)  # مجلد رسائل الطلبات المؤقتة
+os.makedirs('email_notifications', exist_ok=True)  # مجلد إشعارات البريد الإلكتروني
+
 # إعدادات البريد الإلكتروني
 app.config['EMAIL_SENDER'] = 'dareba.service@outlook.com'
 app.config['EMAIL_PASSWORD'] = 'Dareba123456'
@@ -274,6 +278,45 @@ def thank_you():
                 print("تم استخدام الرسالة من الجلسة كاحتياط")
     else:
         print("لم يتم العثور على رقم الطلب في الجلسة")
+
+        # محاولة استرجاع آخر طلب من قاعدة البيانات كاحتياط إضافي
+        try:
+            last_order = Order.query.order_by(Order.id.desc()).first()
+            if last_order:
+                print(f"تم العثور على آخر طلب في قاعدة البيانات برقم: {last_order.id}")
+                # إنشاء رسالة واتساب من بيانات الطلب
+                # تحويل الوقت إلى توقيت القاهرة بنظام 12 ساعة
+                cairo_time = last_order.created_at.astimezone(pytz.timezone('Africa/Cairo'))
+                formatted_time = cairo_time.strftime('%I:%M:%S %p %d/%m/%Y')  # نظام 12 ساعة مع AM/PM
+
+                # إنشاء نص الرسالة
+                recovered_message = (
+                    f"طلب جديد!\n"
+                    f"رقم الطلب: {last_order.id}\n"
+                    f"الاسم: {last_order.user_name}\n"
+                    f"رقم الهاتف الذي سيصل إليه الرصيد: {last_order.user_phone}\n"
+                    f"الرصيد المطلوب: {last_order.net_balance} ج\n"
+                    f"المبلغ المطلوب دفعه: {last_order.total_cost:.0f} ج\n"
+                    f"الوقت: {formatted_time}"
+                )
+
+                whatsapp_message = recovered_message
+                print("تم استرجاع رسالة الواتساب من قاعدة البيانات")
+
+                # حفظ الرسالة في الجلسة وفي ملف
+                session['order_id'] = last_order.id
+                session['whatsapp_message'] = whatsapp_message
+
+                # حفظ الرسالة في ملف
+                try:
+                    message_file = os.path.join(temp_dir, f'order_{last_order.id}.txt')
+                    with open(message_file, 'w', encoding='utf-8') as f:
+                        f.write(whatsapp_message)
+                    print(f"تم حفظ الرسالة المسترجعة في الملف: {message_file}")
+                except Exception as e:
+                    print(f"فشل حفظ الرسالة المسترجعة في ملف: {str(e)}")
+        except Exception as e:
+            print(f"فشل استرجاع آخر طلب من قاعدة البيانات: {str(e)}")
 
     # طباعة رسالة الواتساب للتأكد من وجودها
     print(f"رسالة الواتساب في صفحة الشكر: {whatsapp_message}")
