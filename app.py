@@ -35,15 +35,14 @@ os.makedirs('temp_messages', exist_ok=True)  # مجلد رسائل الطلبا�
 os.makedirs('email_notifications', exist_ok=True)  # مجلد إشعارات البريد الإلكتروني
 
 # إعدادات البريد الإلكتروني
-app.config['EMAIL_SENDER'] = 'dareba.service@outlook.com'
-app.config['EMAIL_PASSWORD'] = 'Dareba123456'
+app.config['EMAIL_SENDER'] = 'dareba.service@gmail.com'
+app.config['EMAIL_PASSWORD'] = 'rvxs zcxl rvxs zcxl'  # كلمة مرور التطبيق لـ Gmail
 app.config['NOTIFICATION_EMAIL'] = 'lahmantisho@gmail.com'  # الإيميل المستلم للإشعارات
-app.config['BREVO_API_KEY'] = 'xkeysib-0a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u-XYZ123'
 
 # تعريف حدود الطلبات (بدون استخدام flask_limiter)
 # يمكن تنفيذ هذا يدويًا لاحقًا إذا لزم الأمر
 
-# وظيفة إرسال البريد الإلكتروني (باستخدام SMTP)
+# وظيفة إرسال البريد الإلكتروني (باستخدام SMTP أو API)
 def send_order_email(order_details):
     try:
         # إنشاء مجلد للإشعارات إذا لم يكن موجودًا (للاحتياط)
@@ -63,15 +62,6 @@ def send_order_email(order_details):
             f.write(order_details)
 
         print(f"تم حفظ إشعار البريد الإلكتروني في الملف: {email_file}")
-
-        # إرسال البريد الإلكتروني باستخدام SMTP
-        msg = MIMEMultipart()
-        msg['From'] = app.config['EMAIL_SENDER']
-        msg['To'] = app.config['NOTIFICATION_EMAIL']
-        msg['Subject'] = "طلب جديد - خدمة شحن الرصيد"
-
-        # استخدام نفس تنسيق رسالة الواتساب للبريد الإلكتروني بالضبط
-        # تحويل النص إلى تنسيق HTML للحفاظ على التنسيق
 
         # تقسيم الرسالة إلى أسطر
         lines = order_details.split('\n')
@@ -116,15 +106,21 @@ def send_order_email(order_details):
         </html>
         """
 
-        # إضافة نسخة HTML ونسخة نصية للبريد
-        msg.attach(MIMEText(html_content, 'html', 'utf-8'))
-        # إضافة نسخة نصية كاحتياط للعملاء الذين لا يدعمون HTML
-        msg.attach(MIMEText(order_details, 'plain', 'utf-8'))
-
-        # إعداد خادم SMTP
+        # محاولة إرسال البريد الإلكتروني باستخدام SMTP
         try:
-            # استخدام خادم Outlook
-            server = smtplib.SMTP('smtp-mail.outlook.com', 587)
+            # إرسال البريد الإلكتروني باستخدام SMTP
+            msg = MIMEMultipart()
+            msg['From'] = app.config['EMAIL_SENDER']
+            msg['To'] = app.config['NOTIFICATION_EMAIL']
+            msg['Subject'] = "طلب جديد - خدمة شحن الرصيد"
+
+            # إضافة نسخة HTML ونسخة نصية للبريد
+            msg.attach(MIMEText(html_content, 'html', 'utf-8'))
+            # إضافة نسخة نصية كاحتياط للعملاء الذين لا يدعمون HTML
+            msg.attach(MIMEText(order_details, 'plain', 'utf-8'))
+
+            # استخدام خادم Gmail
+            server = smtplib.SMTP('smtp.gmail.com', 587)
             server.starttls()  # تأمين الاتصال
             server.login(app.config['EMAIL_SENDER'], app.config['EMAIL_PASSWORD'])
 
@@ -132,12 +128,41 @@ def send_order_email(order_details):
             server.send_message(msg)
             server.quit()
 
-            print("تم إرسال البريد الإلكتروني بنجاح!")
+            print("تم إرسال البريد الإلكتروني بنجاح عبر SMTP!")
             return True
         except Exception as smtp_error:
-            print(f"حدث خطأ أثناء إرسال البريد الإلكتروني: {str(smtp_error)}")
-            print("تم حفظ تفاصيل الطلب في ملف نصي كاحتياط.")
-            return False
+            print(f"حدث خطأ أثناء إرسال البريد الإلكتروني عبر SMTP: {str(smtp_error)}")
+
+            # محاولة إرسال البريد الإلكتروني باستخدام API
+            try:
+                # استخدام طريقة بديلة - إرسال البريد الإلكتروني باستخدام API
+                url = "https://api.emailjs.com/api/v1.0/email/send"
+                payload = {
+                    "service_id": "service_dareba",
+                    "template_id": "template_order",
+                    "user_id": "user_dareba",
+                    "template_params": {
+                        "to_email": app.config['NOTIFICATION_EMAIL'],
+                        "subject": "طلب جديد - خدمة شحن الرصيد",
+                        "message": order_details.replace("\n", "<br>")
+                    }
+                }
+                headers = {
+                    "Content-Type": "application/json"
+                }
+                response = requests.post(url, json=payload, headers=headers)
+
+                if response.status_code == 200:
+                    print("تم إرسال البريد الإلكتروني بنجاح عبر API!")
+                    return True
+                else:
+                    print(f"فشل إرسال البريد الإلكتروني عبر API: {response.text}")
+                    print("تم حفظ تفاصيل الطلب في ملف نصي كاحتياط.")
+                    return False
+            except Exception as api_error:
+                print(f"حدث خطأ أثناء إرسال البريد الإلكتروني عبر API: {str(api_error)}")
+                print("تم حفظ تفاصيل الطلب في ملف نصي كاحتياط.")
+                return False
 
     except Exception as e:
         print(f"حدث خطأ عام: {str(e)}")

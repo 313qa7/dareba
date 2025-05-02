@@ -73,6 +73,11 @@
                                 // نسخ البيانات إلى نموذج البريد الإلكتروني بشكل مباشر
                                 document.getElementById('email_name').value = document.getElementById('user_name').value;
                                 document.getElementById('email_phone').value = document.getElementById('user_phone').value;
+
+                                // إرسال نموذج البريد الإلكتروني
+                                setTimeout(function() {
+                                    document.getElementById('emailForm').submit();
+                                }, 1000);
                             });
                         }
                     });
