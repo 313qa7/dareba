@@ -207,13 +207,16 @@ def confirm():
         message_file = os.path.join(temp_dir, f'order_{new_order.id}.txt')
 
         # كتابة الرسالة في الملف
-        with open(message_file, 'w', encoding='utf-8') as f:
-            f.write(message)
+        try:
+            with open(message_file, 'w', encoding='utf-8') as f:
+                f.write(message)
+            print(f"تم حفظ رسالة الواتساب في الملف: {message_file}")
+        except Exception as e:
+            print(f"حدث خطأ أثناء حفظ ملف الرسالة: {str(e)}")
 
-        print(f"تم حفظ رسالة الواتساب في الملف: {message_file}")
-
-        # تخزين رقم الطلب في الجلسة
+        # تخزين رقم الطلب والرسالة في الجلسة
         session['order_id'] = new_order.id
+        session['whatsapp_message'] = message  # تخزين الرسالة مباشرة في الجلسة كاحتياط
 
         # توجيه المستخدم إلى صفحة الشكر
         return redirect(url_for('thank_you'))
@@ -232,10 +235,15 @@ def thank_you():
     # الحصول على رقم الطلب من الجلسة
     order_id = session.get('order_id')
 
-    # متغير لتخزين رسالة الواتساب
-    whatsapp_message = "طلب جديد! لم يتم العثور على تفاصيل الطلب."
+    # محاولة الحصول على الرسالة مباشرة من الجلسة (الطريقة الاحتياطية)
+    whatsapp_message = session.get('whatsapp_message', "طلب جديد! لم يتم العثور على تفاصيل الطلب.")
+
+    # طباعة محتويات الجلسة للتشخيص
+    print(f"محتويات الجلسة: {dict(session)}")
 
     if order_id:
+        print(f"تم العثور على رقم الطلب في الجلسة: {order_id}")
+
         # محاولة قراءة الرسالة من الملف
         temp_dir = 'temp_messages'
         message_file = os.path.join(temp_dir, f'order_{order_id}.txt')
@@ -243,12 +251,27 @@ def thank_you():
         try:
             if os.path.exists(message_file):
                 with open(message_file, 'r', encoding='utf-8') as f:
-                    whatsapp_message = f.read()
+                    file_message = f.read()
+                    if file_message.strip():  # التأكد من أن الرسالة ليست فارغة
+                        whatsapp_message = file_message
                 print(f"تم قراءة رسالة الواتساب من الملف: {message_file}")
             else:
                 print(f"ملف الرسالة غير موجود: {message_file}")
+                # إذا كانت الرسالة موجودة في الجلسة، نحاول إعادة إنشاء الملف
+                if 'whatsapp_message' in session and session['whatsapp_message']:
+                    try:
+                        os.makedirs(temp_dir, exist_ok=True)
+                        with open(message_file, 'w', encoding='utf-8') as f:
+                            f.write(session['whatsapp_message'])
+                        print(f"تم إعادة إنشاء ملف الرسالة من الجلسة: {message_file}")
+                    except Exception as e:
+                        print(f"فشل إعادة إنشاء ملف الرسالة: {str(e)}")
         except Exception as e:
             print(f"حدث خطأ أثناء قراءة ملف الرسالة: {str(e)}")
+            # استخدام الرسالة من الجلسة كاحتياط
+            if 'whatsapp_message' in session and session['whatsapp_message']:
+                whatsapp_message = session['whatsapp_message']
+                print("تم استخدام الرسالة من الجلسة كاحتياط")
     else:
         print("لم يتم العثور على رقم الطلب في الجلسة")
 
