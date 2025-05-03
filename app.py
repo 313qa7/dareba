@@ -218,9 +218,9 @@ def index():
 
             net_balance = float(net_balance_str)
 
-            # التحقق من أن الرصيد لا يقل عن 50 جنيه
-            if net_balance < 50:
-                flash('أقل قيمة لشحن رصيد صافي هي 50 جنيه!', 'danger')
+            # التحقق من أن الرصيد لا يقل عن 20 جنيه
+            if net_balance < 20:
+                flash('أقل قيمة لشحن رصيد صافي هي 20 جنيه!', 'danger')
                 return render_template('index.html', total_orders=total_orders)
 
             # حساب التكلفة
