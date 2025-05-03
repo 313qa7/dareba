@@ -84,16 +84,19 @@
             align-items: center;
             justify-content: center;
             color: white;
+            flex-wrap: nowrap;
         }
 
         .developer-name {
             color: #ffffff;
             font-weight: 700;
             position: relative;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             padding: 0 5px;
             transition: all 0.3s ease;
             cursor: pointer;
+            white-space: nowrap;
         }
 
         .developer-name:hover {
@@ -122,8 +125,9 @@
         .email-icon {
             font-size: 0.8em;
             opacity: 0.8;
-            vertical-align: super;
+            vertical-align: middle;
             transition: all 0.3s ease;
+            margin-top: -2px;
         }
 
         .developer-name:hover .email-icon {
@@ -137,6 +141,18 @@
             }
             100% {
                 left: 100%;
+            }
+        }
+
+        /* تحسينات للأجهزة المحمولة */
+        @media (max-width: 576px) {
+            .developer-content {
+                font-size: 0.95rem;
+                line-height: 1.4;
+            }
+
+            .developer-banner {
+                padding: 5px 0;
             }
         }
 
@@ -163,7 +179,7 @@
             <i class="bi bi-code-slash text-white me-2"></i>
             <span>تم تطوير الموقع بواسطة</span>
             <a href="mailto:313qa7@gmail.com" class="developer-name ms-1 me-1 text-decoration-none">
-                Abdallah AlKhateb
+                <span>Abdallah AlKhateb</span>
                 <i class="bi bi-envelope-fill ms-1 email-icon"></i>
             </a>
             <i class="bi bi-code-slash text-white ms-2"></i>

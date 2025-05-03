@@ -1,0 +1,47 @@
+/* Developer Banner Styles */
+.developer-banner {
+    background-color: #000;
+    color: #fff;
+    font-weight: 600;
+    position: relative;
+    z-index: 999;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.developer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+    height: 100%;
+}
+
+.developer-name {
+    color: #fff;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.3s ease;
+}
+
+.developer-name:hover {
+    color: #28a745;
+}
+
+.email-icon {
+    font-size: 0.9em;
+    vertical-align: middle;
+}
+
+/* Ensure proper vertical alignment on mobile */
+@media (max-width: 576px) {
+    .developer-content {
+        line-height: 1.5;
+    }
+    
+    .developer-name {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+    }
+}
