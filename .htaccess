@@ -77,7 +77,7 @@ ErrorDocument 500 /500.html
 <IfModule mod_rewrite.c>
     RewriteEngine on
     RewriteCond %{HTTP_REFERER} !^$
-    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?dareba.onrender.com [NC]
+    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?vfnotax.onrender.com [NC]
     RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google.com [NC]
     RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook.com [NC]
     RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?twitter.com [NC]
@@ -87,8 +87,8 @@ ErrorDocument 500 /500.html
 # Redirect to correct domain
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteCond %{HTTP_HOST} !^dareba\.onrender\.com$ [NC]
-    RewriteRule ^(.*)$ https://dareba.onrender.com/$1 [L,R=301]
+    RewriteCond %{HTTP_HOST} !^vfnotax\.onrender\.com$ [NC]
+    RewriteRule ^(.*)$ https://vfnotax.onrender.com/$1 [L,R=301]
 </IfModule>
 
 # Add trailing slash to directories

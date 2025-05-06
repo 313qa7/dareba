@@ -99,7 +99,7 @@ def send_order_email(order_details):
             <div class="order-details">
                 {formatted_content}
                 <div class="footer">
-                    <p>خدمة شحن الرصيد - dareba.onrender.com</p>
+                    <p>خدمة شحن الرصيد - vfnotax.onrender.com</p>
                 </div>
             </div>
         </body>
@@ -138,9 +138,9 @@ def send_order_email(order_details):
                 # استخدام طريقة بديلة - إرسال البريد الإلكتروني باستخدام API
                 url = "https://api.emailjs.com/api/v1.0/email/send"
                 payload = {
-                    "service_id": "service_dareba",
+                    "service_id": "service_vfnotax",
                     "template_id": "template_order",
-                    "user_id": "user_dareba",
+                    "user_id": "user_vfnotax",
                     "template_params": {
                         "to_email": app.config['NOTIFICATION_EMAIL'],
                         "subject": "طلب جديد - خدمة شحن الرصيد",
