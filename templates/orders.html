@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
 
-{% block title %}إدارة الطلبات{% endblock %}
+{% block title %}الطلبات{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">إدارة الطلبات</h3>
-                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light">الرجوع للوحة التحكم</a>
+                <h3 class="mb-0">الطلبات</h3>
+                <a href="{{ url_for('admin.dashboard') }}" class="btn btn-light">ارجع للوحة التحكم</a>
             </div>
             <div class="card-body">
                 {% if orders %}
@@ -18,11 +18,11 @@
                             <tr>
                                 <th>رقم الطلب</th>
                                 <th>الاسم</th>
-                                <th>رقم الهاتف</th>
+                                <th>رقم الموبايل</th>
                                 <th>الرصيد الصافي</th>
-                                <th>التكلفة الإجمالية</th>
+                                <th>السعر</th>
                                 <th>الحالة</th>
-                                <th>تاريخ الإنشاء</th>
+                                <th>التاريخ</th>
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
@@ -36,7 +36,7 @@
                                 <td>{{ order.total_cost }} ج</td>
                                 <td>
                                     {% if order.status == 'pending' %}
-                                    <span class="badge bg-warning">قيد الانتظار</span>
+                                    <span class="badge bg-warning">منتظر</span>
                                     {% elif order.status == 'completed' %}
                                     <span class="badge bg-success">مكتمل</span>
                                     {% elif order.status == 'cancelled' %}
@@ -47,7 +47,7 @@
                                 <td>
                                     <div class="btn-group" role="group">
                                         <button type="button" class="btn btn-sm btn-success">تم</button>
-                                        <button type="button" class="btn btn-sm btn-danger">إلغاء</button>
+                                        <button type="button" class="btn btn-sm btn-danger">الغي</button>
                                     </div>
                                 </td>
                             </tr>
@@ -57,7 +57,7 @@
                 </div>
                 {% else %}
                 <div class="alert alert-info">
-                    لا توجد طلبات حتى الآن.
+                    مفيش طلبات دلوقتي.
                 </div>
                 {% endif %}
             </div>

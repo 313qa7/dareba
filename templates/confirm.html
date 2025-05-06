@@ -1,56 +1,56 @@
 {% extends 'base.html' %}
 
-{% block title %}خدمة شحن الرصيد - تأكيد الطلب{% endblock %}
+{% block title %}VF - NoTAX - تأكيد الطلب{% endblock %}
 
 {% block content %}
 <div class="alert alert-danger text-center mb-4">
-    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>تنبيه هام</h4>
-    <p class="mb-0"><strong>هذه الخدمة مخصصة لأرقام فودافون فقط</strong></p>
+    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>خلي بالك</h4>
+    <p class="mb-0"><strong>الخدمة دي لأرقام فودافون بس</strong></p>
 </div>
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <h2 class="card-title text-center mb-4">تفاصيل الطلب</h2>
+                <h2 class="card-title text-center mb-4">تفاصيل طلبك</h2>
 
                 <div class="price-comparison">
-                    <h3>مقارنة التكلفة:</h3>
+                    <h3>مقارنة الأسعار:</h3>
                     <div class="price-item">
-                        <span class="price-label">الرصيد الصافي المطلوب:</span>
+                        <span class="price-label">الرصيد اللي طلبته:</span>
                         <span class="price-value">{{ net_balance|round(2) }} ج</span>
                     </div>
                     <div class="price-item">
-                        <span class="price-label">التكلفة مع فودافون (شامل 43% ضرائب):</span>
+                        <span class="price-label">سعره عند فودافون (مع 43% ضرايب):</span>
                         <span class="price-value">{{ total_vodafone|round(2) }} ج</span>
                     </div>
                     <div class="price-item highlight">
-                        <span class="price-label">التكلفة معنا:</span>
+                        <span class="price-label">سعره عندنا:</span>
                         <span class="price-value">{{ total_bot|int }} ج</span>
                     </div>
                     <div class="price-item">
-                        <span class="price-label">التوفير:</span>
+                        <span class="price-label">هتوفر:</span>
                         <span class="price-value">{{ (total_vodafone - total_bot)|round(2) }} ج</span>
                     </div>
                 </div>
 
                 <form method="POST" action="{{ url_for('confirm') }}">
                     <div class="form-group mb-3">
-                        <label for="user_name" class="form-label">الاسم:</label>
+                        <label for="user_name" class="form-label">اسمك:</label>
                         <input type="text" class="form-control" id="user_name" name="user_name" required>
                     </div>
                     <div class="form-group mb-3">
-                        <label for="user_phone" class="form-label">رقم الهاتف الذي سيصل إليه الرصيد:</label>
+                        <label for="user_phone" class="form-label">رقم الموبايل اللي هيوصله الرصيد:</label>
                         <input type="tel" class="form-control" id="user_phone" name="user_phone" required>
                     </div>
 
                     <div class="alert alert-info">
-                        <p>لإتمام الطلب، يرجى تحويل مبلغ <strong>{{ total_bot|int }} ج</strong> إلى رقم فودافون كاش التالي:</p>
+                        <p>عشان تكمل الطلب، حول مبلغ <strong>{{ total_bot|int }} ج</strong> لرقم فودافون كاش ده:</p>
                         <div class="vodafone-number">{{ vodafone_cash }}</div>
-                        <p>بعد التأكيد، سيتم توجيهك لإرسال تفاصيل الطلب عبر الواتساب.</p>
+                        <p>بعد ما تضغط تأكيد، هنوجهك لإرسال تفاصيل الطلب على الواتساب.</p>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">تأكيد الطلب</button>
+                    <button type="submit" class="btn btn-primary">أكد الطلب</button>
                 </form>
 
                 <!-- نموذج إرسال البريد الإلكتروني (مخفي) -->

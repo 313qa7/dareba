@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}خدمة شحن الرصيد - شكراً لك{% endblock %}
+{% block title %}VF - NoTAX - شكراً لك{% endblock %}
 
 {% block head %}
 <script>
@@ -23,10 +23,10 @@
 
 {% block content %}
 <div class="thank-you">
-    <h2>شكراً لطلبك!</h2>
+    <h2>شكراً على طلبك!</h2>
     <div class="alert alert-success mb-4">
-        <p>تم استلام طلبك بنجاح.</p>
-        <p><strong>لن يتم شحن رصيدك إلا بعد إرسال تفاصيل الطلب و اسكرين بالتحويل على الواتساب.</strong></p>
+        <p>استلمنا طلبك بنجاح.</p>
+        <p><strong>مش هنشحن الرصيد غير لما تبعت تفاصيل الطلب وسكرين شوت بالتحويل على الواتساب.</strong></p>
         <div class="text-center mt-3">
             <i class="bi bi-arrow-down fs-1 text-success animate__animated animate__bounce animate__infinite"></i>
         </div>
@@ -37,7 +37,7 @@
         <a href="#" id="whatsapp-button"
            onclick="sendWhatsApp()"
            class="btn btn-success btn-lg">
-            <i class="bi bi-whatsapp me-2"></i>إرسال تفاصيل الطلب عبر واتساب
+            <i class="bi bi-whatsapp me-2"></i>ابعت تفاصيل الطلب على واتساب
         </a>
     </div>
 
@@ -57,18 +57,18 @@
 
     <!-- تم إزالة العناصر المخفية غير الضرورية لتحسين الأداء -->
 
-    <p>سيتم شحن رصيدك خلال بضع دقائق و خلال 30 دقيقة كحد أقصى من وقت تأكيد التحويل.</p>
+    <p>هنشحنلك الرصيد خلال دقايق وبحد أقصى 30 دقيقة من وقت ما نتأكد من التحويل.</p>
 
 
 
     <div class="alert alert-danger mb-4">
-        <p><strong>تحذير:</strong> يرجى العلم أن أي تعديل في رسالة الطلب تؤدي إلى حظر رقمك نهائياً.</p>
+        <p><strong>تحذير:</strong> لو عدلت في رسالة الطلب هيتم حظر رقمك نهائي.</p>
     </div>
 
     <div class="alert alert-info mb-4">
-        <p>إذا كان لديك أي استفسار، يرجى التواصل معنا على الواتساب: <strong>+201012874414</strong></p>
+        <p>عندك أي سؤال؟ كلمنا على الواتساب: <strong>+201012874414</strong></p>
     </div>
 
-    <a href="{{ url_for('index') }}" class="btn btn-primary">العودة للصفحة الرئيسية</a>
+    <a href="{{ url_for('index') }}" class="btn btn-primary">ارجع للصفحة الرئيسية</a>
 </div>
 {% endblock %}

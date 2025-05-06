@@ -1,11 +1,149 @@
 {% extends 'base.html' %}
 
-{% block title %}خدمة شحن الرصيد - الصفحة الرئيسية{% endblock %}
+{% block title %}VF - NoTAX - الصفحة الرئيسية{% endblock %}
 
 {% block content %}
+<style>
+    /* أنماط نموذج إدخال الرصيد - تصميم أسود وأبيض */
+    .balance-card {
+        border: 3px solid #000;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        margin-bottom: 40px;
+        background-color: #fff;
+        transform: scale(1.02);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 10;
+    }
+
+    .balance-card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .balance-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 25px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .balance-label {
+        font-size: 18px;
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 10px;
+    }
+
+    .balance-input {
+        height: 60px;
+        font-size: 24px;
+        font-weight: 600;
+        border: 2px solid #000;
+        border-radius: 10px;
+        padding: 10px 15px;
+        color: #000;
+        background-color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    .balance-input:focus {
+        border-color: #000;
+        box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .balance-hint {
+        font-size: 16px;
+        color: #555;
+        margin-top: 10px;
+    }
+
+    .balance-button {
+        font-size: 20px;
+        font-weight: 700;
+        padding: 15px 30px;
+        margin-top: 20px;
+        background-color: #000;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .balance-button:hover {
+        background-color: #333;
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    /* تحسينات للأجهزة المحمولة */
+    @media (max-width: 576px) {
+        .balance-title {
+            font-size: 24px;
+        }
+
+        .balance-input {
+            height: 55px;
+            font-size: 22px;
+        }
+
+        .balance-button {
+            font-size: 18px;
+            padding: 12px 25px;
+        }
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card balance-card">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4 balance-title">اكتب الرصيد اللي عايزه</h2>
+                <form method="POST" action="{{ url_for('index') }}" id="balanceForm">
+                    <div class="form-group mb-4">
+                        <label for="net_balance" class="form-label balance-label">الرصيد الصافي (بالجنيه):</label>
+                        <input type="number" inputmode="numeric" pattern="[0-9]*" class="form-control balance-input" id="net_balance" name="net_balance" min="20" required>
+                        <small class="form-text balance-hint">اكتب الرصيد اللي عايز تشحنه (من غير ضرايب)</small>
+                    </div>
+                    <button type="submit" class="btn w-100 balance-button" id="calculateBtn">احسب السعر</button>
+                </form>
+
+                <script>
+                    // تحسين التوافق مع جميع الأجهزة وتسريع الأداء
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var form = document.getElementById('balanceForm');
+                        var calculateBtn = document.getElementById('calculateBtn');
+                        var inputField = document.getElementById('net_balance');
+
+                        if (inputField) {
+                            // استخدام passive: true لتحسين الأداء على الأجهزة اللمسية
+                            inputField.addEventListener('input', function(e) {
+                                this.value = this.value.replace(/[^0-9]/g, '');
+                            }, { passive: true });
+                        }
+
+                        if (form) {
+                            form.addEventListener('submit', function(e) {
+                                // التحقق من صحة الإدخال
+                                var value = parseInt(inputField.value);
+                                if (isNaN(value) || value < 20) {
+                                    e.preventDefault();
+                                    alert('معلش، أقل رصيد ممكن تشحنه هو 20 جنيه!');
+                                    return false;
+                                }
+                            });
+                        }
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="alert alert-danger text-center mb-4">
-    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>تنبيه هام</h4>
-    <p class="mb-0"><strong>هذه الخدمة مخصصة لأرقام فودافون فقط</strong></p>
+    <h4 class="alert-heading"><i class="bi bi-exclamation-triangle-fill me-2"></i>خلي بالك</h4>
+    <p class="mb-0"><strong>الخدمة دي لأرقام فودافون بس</strong></p>
 </div>
 
 <div class="stats-container mb-4">
@@ -14,12 +152,12 @@
             <div class="stats-icon">
                 <i class="bi bi-graph-up-arrow"></i>
             </div>
-            <h4>إحصائيات الموقع</h4>
+            <h4>أرقام وإحصائيات</h4>
         </div>
         <div class="stats-body">
             <div class="stats-counter">
                 <div class="counter-value" id="ordersCounter">0</div>
-                <div class="counter-label">طلب تم تنفيذه بنجاح</div>
+                <div class="counter-label">عميل استخدم الخدمة بنجاح</div>
             </div>
             <div class="stats-decoration">
                 <div class="decoration-circle"></div>
@@ -27,7 +165,7 @@
                 <div class="decoration-circle"></div>
             </div>
             <div class="stats-message">
-                نشكركم على ثقتكم الغالية في خدمتنا
+                شكراً على ثقتكم فينا
             </div>
         </div>
     </div>
@@ -168,65 +306,18 @@
     });
 </script>
 
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-body">
-                <h2 class="card-title text-center mb-4">أدخل الرصيد الصافي المطلوب</h2>
-                <form method="POST" action="{{ url_for('index') }}" id="balanceForm">
-                    <div class="form-group mb-3">
-                        <label for="net_balance" class="form-label">الرصيد الصافي (بالجنيه):</label>
-                        <input type="number" inputmode="numeric" pattern="[0-9]*" class="form-control" id="net_balance" name="net_balance" min="20" required>
-                        <small class="form-text text-muted">أدخل الرصيد الصافي الذي تريد شحنه (بدون ضرائب)</small>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="calculateBtn">حساب التكلفة</button>
-                </form>
-
-                <script>
-                    // تحسين التوافق مع جميع الأجهزة وتسريع الأداء
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var form = document.getElementById('balanceForm');
-                        var calculateBtn = document.getElementById('calculateBtn');
-                        var inputField = document.getElementById('net_balance');
-
-                        if (inputField) {
-                            // استخدام passive: true لتحسين الأداء على الأجهزة اللمسية
-                            inputField.addEventListener('input', function(e) {
-                                this.value = this.value.replace(/[^0-9]/g, '');
-                            }, { passive: true });
-                        }
-
-                        if (form) {
-                            form.addEventListener('submit', function(e) {
-                                // التحقق من صحة الإدخال
-                                var value = parseInt(inputField.value);
-                                if (isNaN(value) || value < 20) {
-                                    e.preventDefault();
-                                    alert('أقل قيمة لشحن رصيد صافي هي 20 جنيه!');
-                                    return false;
-                                }
-                            });
-                        }
-                    });
-                </script>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 <div class="row mt-4">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title text-center mb-4">ملاحظات هامة</h3>
+                <h3 class="card-title text-center mb-4">حاجات مهمة لازم تعرفها</h3>
                 <div class="alert alert-warning">
                     <ul class="mb-0">
-                        <li class="mb-2"><strong>أقل قيمة لشحن رصيد صافي هي 20 جنيه.</strong></li>
-                        <li class="mb-2">يتم شحن الرصيد خلال بضع دقائق و خلال 30 دقيقة كحد أقصى من وقت تأكيد التحويل.</li>
-                        <li class="mb-2"><strong>لن يتم شحن رصيدك إلا بعد إرسال اسكرين بالتحويل.</strong></li>
-                        <li class="mb-2">للاستفسارات يرجى التواصل على الواتساب: {{ "+201012874414" }}</li>
+                        <li class="mb-2"><strong>أقل رصيد ممكن تشحنه هو 20 جنيه.</strong></li>
+                        <li class="mb-2">هنشحنلك الرصيد خلال دقايق، وبحد أقصى 30 دقيقة من وقت ما تأكد التحويل.</li>
+                        <li class="mb-2"><strong>مش هنشحن الرصيد غير لما تبعت سكرين شوت بالتحويل.</strong></li>
+                        <li class="mb-2">عندك أي سؤال كلمنا على الواتساب: {{ "+201012874414" }}</li>
                     </ul>
                 </div>
             </div>
@@ -238,30 +329,30 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <h3 class="card-title text-center mb-4">لماذا تختار خدمتنا لشحن رصيد فودافون؟</h3>
+                <h3 class="card-title text-center mb-4">ليه تختار خدمتنا لشحن رصيد فودافون؟</h3>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="feature-box p-3 mb-3">
-                            <h4><i class="bi bi-piggy-bank text-primary me-2"></i>توفير مالي كبير</h4>
-                            <p>نقدم لك خدمة شحن رصيد فودافون بخصم 21% من قيمة الرصيد، مما يوفر لك مبالغ كبيرة خاصة مع الشحنات المتكررة.</p>
+                            <h4><i class="bi bi-piggy-bank text-primary me-2"></i>هتوفر فلوس كتير</h4>
+                            <p>بنقدملك خدمة شحن رصيد فودافون بخصم 21% من قيمة الرصيد، يعني هتوفر فلوس كتير خصوصاً لو بتشحن كتير.</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="feature-box p-3 mb-3">
-                            <h4><i class="bi bi-lightning-charge text-primary me-2"></i>سرعة الشحن</h4>
-                            <p>نقوم بشحن رصيد فودافون خلال دقائق من استلام صورة التحويل، وبحد أقصى 30 دقيقة في أوقات الذروة.</p>
+                            <h4><i class="bi bi-lightning-charge text-primary me-2"></i>شحن سريع</h4>
+                            <p>بنشحن الرصيد خلال دقايق من ما بتبعت صورة التحويل، وبحد أقصى 30 دقيقة في أوقات الزحمة.</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="feature-box p-3 mb-3">
-                            <h4><i class="bi bi-shield-check text-primary me-2"></i>أمان وموثوقية</h4>
-                            <p>خدمة شحن رصيد فودافون لدينا آمنة 100% ونحرص على حماية بياناتك الشخصية وتقديم خدمة موثوقة.</p>
+                            <h4><i class="bi bi-shield-check text-primary me-2"></i>أمان وثقة</h4>
+                            <p>خدمتنا آمنة 100% وبنحافظ على بياناتك الشخصية، وبنقدم خدمة تقدر تثق فيها.</p>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="feature-box p-3 mb-3">
-                            <h4><i class="bi bi-headset text-primary me-2"></i>دعم فني متميز</h4>
-                            <p>فريق الدعم الفني متاح على مدار الساعة للرد على استفساراتك وحل أي مشكلة تواجهك في شحن رصيد فودافون.</p>
+                            <h4><i class="bi bi-headset text-primary me-2"></i>دعم فني على طول</h4>
+                            <p>فريق الدعم الفني موجود على مدار الساعة للرد على أي سؤال وحل أي مشكلة تقابلك في شحن الرصيد.</p>
                         </div>
                     </div>
                 </div>
